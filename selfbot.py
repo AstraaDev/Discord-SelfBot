@@ -1670,67 +1670,17 @@ async def tokeninfo(ctx, usertoken=None):
             d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
             d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
             days_left = abs((d2 - d1).days)
-        billing_info = []
 
-        for x in requests.get('https://discordapp.com/api/v6/users/@me/billing/payment-sources', headers=headers).json():
-            yy = x['billing_address']
-            name = yy['name']
-            address_1 = yy['line_1']
-            address_2 = yy['line_2']
-            city = yy['city']
-            postal_code = yy['postal_code']
-            state = yy['state']
-            country = yy['country']
-
-            if x['type'] == 1:
-                cc_brand = x['brand']
-                cc_first = cc_digits.get(cc_brand)
-                cc_last = x['last_4']
-                cc_month = str(x['expires_month'])
-                cc_year = str(x['expires_year'])
-
-                data = {
-                    'Payment Type': 'Credit Card',
-                    'Valid': not x['invalid'],
-                    'CC Holder Name': name,
-                    'CC Brand': cc_brand.title(),
-                    'CC Number': ''.join(z if (i + 1) % 2 else z + ' ' for i, z in enumerate((cc_first if cc_first else '*') + ('*' * 11) + cc_last)),
-                    'CC Exp. Date': ('0' + cc_month if len(cc_month) < 2 else cc_month) + '/' + cc_year[2:4],
-                    'Address 1': address_1,
-                    'Address 2': address_2 if address_2 else '',
-                    'City': city,
-                    'Postal Code': postal_code,
-                    'State': state if state else '',
-                    'Country': country,
-                    'Default Payment Method': x['default']
-                }
-
-            elif x['type'] == 2:
-                data = {
-                    'Payment Type': 'PayPal',
-                    'Valid': not x['invalid'],
-                    'PayPal Name': name,
-                    'PayPal Email': x['email'],
-                    'Address 1': address_1,
-                    'Address 2': address_2 if address_2 else '',
-                    'City': city,
-                    'Postal Code': postal_code,
-                    'State': state if state else '',
-                    'Country': country,
-                    'Default Payment Method': x['default']
-                }
-            billing_info.append(data)
-
-            try:
-                embed = f"""**TOKEN INFORMATIONS | Prefix: `{Astraa.command_prefix}`**\n
+        try:
+            embed = f"""**TOKEN INFORMATIONS | Prefix: `{Astraa.command_prefix}`**\n
 > :dividers: __Basic Information__\n\tUsername: `{user_name}`\n\tUser ID: `{user_id}`\n\tCreation Date: `{creation_date}`\n\tAvatar URL: `{avatar_url if avatar_id else "None"}`
 > :crystal_ball: __Nitro Information__\n\tNitro Status: `{has_nitro}`\n\tExpires in: `{days_left if days_left else "None"} day(s)`
 > :incoming_envelope: __Contact Information__\n\tPhone Number: `{phone_number if phone_number else "None"}`\n\tEmail: `{email if email else "None"}`
 > :shield: __Account Security__\n\t2FA/MFA Enabled: `{mfa_enabled}`\n\tFlags: `{flags}`
 > :paperclip: __Other__\n\tLocale: `{locale} ({language})`\n\tEmail Verified: `{verified}`"""
-                await ctx.send(embed, file=discord.File("Images/astraa.gif"))
-            except Exception as e:
-                await ctx.send(e)
+            await ctx.send(embed, file=discord.File("Images/astraa.gif"))
+        except Exception as e:
+            await ctx.send(e)
 
     elif res.status_code == 401:
         await ctx.send(f"[ERROR]: Invalid token")
