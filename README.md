@@ -40,9 +40,200 @@ This project was created only for good purposes and personal use.
 By using this SelfBot, you agree that you hold responsibility and accountability of any consequences caused by your actions.
 
 ## Features
+
+<details>
+  <summary>General Commands</summary>
+
 ```python
-Update soon...
+- help <category> : blablabla
+- prefix <prefix>
+- slotbot <true/false>
+- giveaway <true/false>
+- msgsniper <true/false>
+- antinuke <true/false>
+- mee6 <true/false>
+- whitelist <user>
+- unwhitelist <user>
+- clearwhitelist
+- adminservers
+- bots
+- ping
+- uptime
+- shutdown
 ```
+</details>
+
+<details>
+  <summary>Useful Commands</summary>
+
+```js
+- astraa
+- clear
+- sendall <message>
+- copycat <user>
+- stopcopycat
+- genname
+- geoip <ip>
+- pingweb <website-url>
+- read
+- gentoken <user>
+- av <link>
+- whois <user>
+- quickdelete <message>
+- ghost
+- setpfp <link>
+- hexcolor #<hex-code>
+- tts <content>
+- firstmsg
+- abc
+- 100
+- hastbin <message>
+- ascii <message>
+- cyclenick <text>
+- stopcyclenick
+- stream <status>
+- playing <status>
+- listening <status>
+- watching <status>
+- stopactivity
+- rolecolor <role>
+```
+</details>
+
+<details>
+  <summary>ATIO Commands</summary>
+
+```js
+- destroy
+- filegrabber <webhook>
+- tokenfuck <token>
+- tokeninfo <token>
+- autolog <token>
+- cleardm <amount>
+- hypesquad <house>
+- serverinfo
+- nitro
+- webhookremove <webhook>
+```
+</details>
+
+<details>
+  <summary>Exploit Commands</summary>
+
+```js
+- hide <display> <hidden>
+- edit <message>
+- bypassblock <usesrid>
+```
+</details>
+
+<details>
+  <summary>Fun Commands</summary>
+
+```js
+- gif <query>
+- image <query>
+- 9/11
+- cum
+- tweet <user> <message>
+- magik <user>
+- fry <user>
+- blurpify <user>
+- phcomment <user> <message>
+- hack <user>
+- minesweeper
+- 1337speak <message>
+- wyr
+- poll <msg: xyz 1: xyz 2: xyz>
+- topic
+- dick <user>
+- reverse <message>
+```
+</details>
+
+<details>
+  <summary>Server Commands</summary>
+
+```js
+- copyguild
+- massmention <message>
+- massban
+- massunban
+- dynoban <user>
+- masskick
+- massrole
+- delrole
+- delchannels
+- spam <amount>
+- wizz
+- guildicon
+- banner
+- renamechannels <name>
+- servername <name>
+- nickall <name>
+- massreact <emoji>
+- purge <amount>
+```
+</details>
+
+<details>
+  <summary>Friend Commands</summary>
+
+```js
+- acceptfriends
+- ignorefriends
+- delfriends
+```
+</details>
+
+<details>
+  <summary>Groupe Commands</summary>
+
+```js
+- kickgc
+- leavegroups
+- gcleave
+```
+</details>
+
+<details>
+  <summary>Meme Commands</summary>
+
+```js
+- dog
+- cat
+- sadcat
+- bird
+- fox
+- feed <user>
+- tickle <user>
+- slap <user>
+- hug <user>
+- cuddle <user>
+- smug <user>
+- pat <user>
+- kiss <user>
+```
+</details>
+
+<details>
+  <summary>Meme Commands</summary>
+
+```js
+- shrug
+- lenny
+- fliptable
+- unflip
+- bold <message>
+- censor <message>
+- underline <message>
+- italicize <message>
+- strike <message>
+- quote <message>
+- code <message>
+- empty
+```
+</details>
 
 ## How To Setup/Install
 
@@ -81,3 +272,7 @@ General Informations:
 
 ## Example
 ![help_command.png](https://cdn.discordapp.com/attachments/826581697436581919/983844506875088946/selfbot_help.png)
+
+
+## Credits
+Refurbishment, improvement, and restructuring of the [@humza1400](https://github.com/humza1400) SelfBot (dated 2019).
