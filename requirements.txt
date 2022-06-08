@@ -2,7 +2,7 @@ requests
 colorama
 discord.py
 selenium
-colorate
+bs4
 Pillow
 aiohttp
 gtts
