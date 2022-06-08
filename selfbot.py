@@ -1634,12 +1634,6 @@ async def tokeninfo(ctx, usertoken=None):
     'ko'    : 'Korean, Korea'
     }
 
-    cc_digits = {
-        'american express': '3',
-        'visa': '4',
-        'mastercard': '5'
-    }
-
     try:
         res = requests.get('https://discordapp.com/api/v6/users/@me', headers=headers)
     except:
