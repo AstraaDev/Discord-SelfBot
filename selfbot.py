@@ -176,15 +176,13 @@ def Init():
         input(f"{y}[{Fore.LIGHTRED_EX}!{y}]{w} Please set a prefix in the config.json file.")
         return
     try:
-        r = requests.get('https://discord.com/api/v6/auth/login', headers={"Authorization": token})
-        r = str(r)
-        if "400" in r:
+        try:
+            Astraa.run(token, bot=False, reconnect=True)
+        except:
             os.system("cls")
             atio_title()
             input(f"{y}[{Fore.LIGHTRED_EX}!{y}]{w} The token located in the config.json file is invalid")
             return
-        elif "200" in r:
-            Astraa.run(token, bot=False, reconnect=True)
     except Exception:
         os.system("cls")
         atio_title()
