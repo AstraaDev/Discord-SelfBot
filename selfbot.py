@@ -202,8 +202,9 @@ class Login(discord.Client):
         await self.logout()
 
 #Initialization of the Bot parameters
-Astraa = discord.Client()
-Astraa = commands.Bot(description='ATIO Tool - SelfBot created by Astraa', command_prefix=prefix, self_bot=True)
+intents = discord.Intents().all()
+Astraa = discord.Client(intents=intents)
+Astraa = commands.Bot(description='ATIO Tool - SelfBot created by Astraa', command_prefix=prefix, self_bot=True, intents=intents)
 
 Astraa.antiraid = False
 Astraa.msgsniper = True
