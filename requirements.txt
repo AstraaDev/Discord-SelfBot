@@ -1,6 +1,6 @@
 requests
 colorama
-discord.py
+discord.py-self
 selenium
 bs4
 Pillow
