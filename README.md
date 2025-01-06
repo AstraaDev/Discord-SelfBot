@@ -247,7 +247,7 @@ By using this SelfBot, you agree that you hold responsibility and accountability
     "nitro_sniper": true, #Can take the value: true or false
     "giveaway_sniper": true, #Can take the value: true or false
 
-    "stream_url": "https://twitch.tv/USERNAME", #Useful for the statue
+    "stream_url": "https://twitch.tv/USERNAME", #Useful for the status
     "tts_language": "en" #Set the language of the tts messages
 }
 ```
