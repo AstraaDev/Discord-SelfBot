@@ -1,35 +1,24 @@
 <p align="center">
-  <img src="https://i.discord.fr/PSS.png">
+  <img src="https://3684636823-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FAAWXLgBhsxb38Q3iF3ha%2Fsocialpreview%2FJYYwVSNx9yLnXY8adfAU%2Fbanner.png?alt=media&token=264b3ce3-6643-4b55-8990-ca5cd2516dce">
 </p>
 
-<h1 align="center">[Discord] - SelfBot (V1.0.0)</h1>
+<h1 align="center">[Discord] - SelfBot (V2.1)</h1>
 <p align="center">
   <a href="https://github.com/AstraaDev/Discord-SelfBot/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-important">
   </a>
-  <a href="https://www.python.org">
-    <img src="https://img.shields.io/badge/Python-3.9-informational.svg">
-  </a>
-  <a href="https://github.com/AstraaDev/SelfBot">
-    <img src="https://img.shields.io/badge/covarage-70%25-yellow">
-  </a>
   <a href="https://github.com/AstraaDev">
     <img src="https://img.shields.io/github/repo-size/AstraaDev/Discord-SelfBot.svg?label=Repo%20size&style=flat-square">
-  </a>
-  <a href="https://github.com/AstraaDev">
-    <img src="https://gpvc.arturio.dev/AstraaDev">
-  </a>
-    <p align="center"> <a href="https://twitter.com/astraadev" target="blank">
-    <img src="https://img.shields.io/twitter/follow/astraadev?logo=twitter&style=for-the-badge" alt="astraadev"/></a>
   </a>
 </p>
 
 <p align="center">
-  [Discord] - SelfBot is a Script Gathering for Windows systems written in Python.
+  [Discord] - SelfBot is a Script Gathering for Windows, Linux, MacOS systems written in Python.
 </p>
-<p align="center">
-  This SelfBot has a total of about 60 commands to make your life on discord easier. It has a nice and intuitive interface to make it easy to use for everyone, help and explanations for each command, a very complete help command.
-</p>
+This SelfBot has a large number of commands to make your life on discord easier. It has a nice and intuitive interface to make it easy to use for everyone, help and explanations for each command, a very complete help command.
+Given the attractiveness of this SelfBot, which is one of the latest functional ones, I made sure to update it as soon as possible.
+I've intentionally removed a large proportion of the initial commands deemed unnecessary. However, if any of the old commands seem worth adding, please create an issue or contact me on discord.
+I'll try to keep this repo up to date in the future.
 
 
 ## Disclaimer
@@ -45,21 +34,9 @@ By using this SelfBot, you agree that you hold responsibility and accountability
   <summary>General Commands</summary>
 
 ```python
-- help <category> : blablabla
-- prefix <prefix>
-- slotbot <true/false>
-- giveaway <true/false>
-- msgsniper <true/false>
-- antinuke <true/false>
-- mee6 <true/false>
-- whitelist <user>
-- unwhitelist <user>
-- clearwhitelist
-- adminservers
-- bots
+- help <category>
 - ping
 - uptime
-- shutdown
 ```
 </details>
 
@@ -68,34 +45,10 @@ By using this SelfBot, you agree that you hold responsibility and accountability
 
 ```js
 - astraa
-- clear
-- sendall <message>
-- copycat <user>
-- stopcopycat
-- genname
 - geoip <ip>
 - pingweb <website-url>
-- read
 - gentoken <user>
-- av <link>
-- whois <user>
 - quickdelete <message>
-- ghost
-- setpfp <link>
-- hexcolor #<hex-code>
-- tts <content>
-- firstmsg
-- abc
-- 100
-- hastbin <message>
-- ascii <message>
-- cyclenick <text>
-- stopcyclenick
-- stream <status>
-- playing <status>
-- listening <status>
-- watching <status>
-- stopactivity
 - rolecolor <role>
 ```
 </details>
@@ -104,11 +57,7 @@ By using this SelfBot, you agree that you hold responsibility and accountability
   <summary>ATIO Commands</summary>
 
 ```js
-- destroy
-- filegrabber <webhook>
-- tokenfuck <token>
 - tokeninfo <token>
-- autolog <token>
 - cleardm <amount>
 - hypesquad <house>
 - serverinfo
@@ -123,7 +72,6 @@ By using this SelfBot, you agree that you hold responsibility and accountability
 ```js
 - hide <display> <hidden>
 - edit <message>
-- bypassblock <usesrid>
 ```
 </details>
 
@@ -131,21 +79,10 @@ By using this SelfBot, you agree that you hold responsibility and accountability
   <summary>Fun Commands</summary>
 
 ```js
-- gif <query>
-- image <query>
 - 9/11
 - cum
-- tweet <user> <message>
-- magik <user>
-- fry <user>
-- blurpify <user>
-- phcomment <user> <message>
-- hack <user>
 - minesweeper
-- 1337speak <message>
-- wyr
-- poll <msg: xyz 1: xyz 2: xyz>
-- topic
+- 1337 <message>
 - dick <user>
 - reverse <message>
 ```
@@ -155,64 +92,11 @@ By using this SelfBot, you agree that you hold responsibility and accountability
   <summary>Server Commands</summary>
 
 ```js
-- copyguild
-- massmention <message>
-- massban
-- massunban
-- dynoban <user>
-- masskick
-- massrole
-- delrole
-- delchannels
 - spam <amount>
-- wizz
 - guildicon
-- banner
-- renamechannels <name>
-- servername <name>
-- nickall <name>
-- massreact <emoji>
+- guildbanner
+- guildname <name>
 - purge <amount>
-```
-</details>
-
-<details>
-  <summary>Friend Commands</summary>
-
-```js
-- acceptfriends
-- ignorefriends
-- delfriends
-```
-</details>
-
-<details>
-  <summary>Groupe Commands</summary>
-
-```js
-- kickgc
-- leavegroups
-- gcleave
-```
-</details>
-
-<details>
-  <summary>Meme Commands</summary>
-
-```js
-- dog
-- cat
-- sadcat
-- bird
-- fox
-- feed <user>
-- tickle <user>
-- slap <user>
-- hug <user>
-- cuddle <user>
-- smug <user>
-- pat <user>
-- kiss <user>
 ```
 </details>
 
@@ -224,31 +108,17 @@ By using this SelfBot, you agree that you hold responsibility and accountability
 - lenny
 - fliptable
 - unflip
-- bold <message>
-- censor <message>
-- underline <message>
-- italicize <message>
-- strike <message>
-- quote <message>
-- code <message>
 - empty
 ```
 </details>
 
 ## How To Setup/Install
 
-#### First of all please set a prefix in the config.json file!
+#### First of all please enter ur token and a prefix in the config.json file!
 ```json
 {
     "token": "TOKEN-HERE", 
-    "password": "PASSWORD-HERE", #Useful for some options
     "prefix": "PREFIX-HERE",
-    
-    "nitro_sniper": true, #Can take the value: true or false
-    "giveaway_sniper": true, #Can take the value: true or false
-
-    "stream_url": "https://twitch.tv/USERNAME", #Useful for the status
-    "tts_language": "en" #Set the language of the tts messages
 }
 ```
 
@@ -264,15 +134,13 @@ $ python -m pip install -r requirements.txt
 $ python selfbot.py
 ```
 
-## Additional Informations
-General Informations:
-- If you have a problem, [CLICK HERE](https://github.com/AstraaDev/Discord-SelfBot) to watch the YouTube video.
-- If you find any malfunction, contact me on Discord: Astraa#6100 or join my [Discord Server](https://dsc.gg/astraadev).
-
-
 ## Example
-![help_command.png](https://cdn.discordapp.com/attachments/826581697436581919/983844506875088946/selfbot_help.png)
+<img src="https://cdn.discordapp.com/attachments/1079127307656122501/1326253525541326848/image.png?ex=677ec159&is=677d6fd9&hm=9e3ba05258933e5c1d1f2b769a086f8a6d82ec26069382e9b80ed1decbc17062&" alt="SelfBot Example" width="400">
 
+## Additional Information
+- For support, join the [Discord Server](https://discord.gg/PKR7nM9j9U).
+- Contributions are welcome. Feel free to open an issue or create a pull request.
 
 ## Credits
 Refurbishment, improvement, and restructuring of the [@humza1400](https://github.com/humza1400) SelfBot (dated 2019).
+
