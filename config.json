@@ -1,11 +1,4 @@
 {
-    "token": "",
-    "password": "",
-    "prefix": "*",
-    
-    "nitro_sniper": true, 
-    "giveaway_sniper": true,
-
-    "stream_url": "",
-    "tts_language": "en"
+    "token": "YOUR_TOKEN_HERE",
+    "prefix": "*"
 }
