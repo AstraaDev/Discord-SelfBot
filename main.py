@@ -103,7 +103,7 @@ class MyClient(discord.Client):
             embed = f"""**FUN COMMANDS | Prefix: `{prefix}`**\n
         > :airplane: `{prefix}9/11`\n*Sends a 9/11 attack*
         > :sweat_drops: `{prefix}cum`\n*Makes you cum*
-        > :bomb: `{prefix}minesweeper`\n*Play a game of minesweeper*
+        > :bomb: `{prefix}minesweeper <grid size>`\n*Play a game of minesweeper*
         > :dark_sunglasses: `{prefix}1337 <message>`\n*Talk like a hacker*
         > :eggplant: `{prefix}dick <user>`\n*Returns the user's dick size*
         > :recycle: `{prefix}reverse <message>`\n*Sends the message but in reverse-order*"""
@@ -447,7 +447,11 @@ class MyClient(discord.Client):
                 await sent_message.edit(content=frame)
         elif message.content.startswith(f"{prefix}minesweeper"):
             await message.delete()
-            size = max(min(int(message.content[len(f"{prefix}minesweeper "):].strip()), 8), 2)
+            content = message.content[len(f"{prefix}minesweeper "):].strip()
+            if content:
+                size = max(min(int(content), 8), 2)
+            else:
+                size = 5
             bombs = [[random.randint(0, size - 1), random.randint(0, size - 1)] for x in range(int(size - 1))]
             is_on_board = lambda x, y: 0 <= x < size and 0 <= y < size
             has_bomb = lambda x, y: [i for i in bombs if i[0] == x and i[1] == y]
