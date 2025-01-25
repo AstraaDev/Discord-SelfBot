@@ -37,6 +37,7 @@ By using this SelfBot, you agree that you hold responsibility and accountability
 - help <category>
 - ping
 - uptime
+- autoreply <ON/OFF>
 ```
 </details>
 

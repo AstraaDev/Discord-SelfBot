@@ -10,6 +10,7 @@ import time
 import datetime
 from colorama import Fore
 import platform
+import itertools
 
 y = Fore.LIGHTYELLOW_EX
 b = Fore.LIGHTBLUE_EX
@@ -23,6 +24,19 @@ token = config.get('token')
 prefix = config.get('prefix')
 
 start_time = datetime.datetime.utcnow()
+autoreply_status = {}
+autoreply_generators = {}
+
+def autoreply_generator():
+    try:
+        with open("autoreply.txt", "r") as file:
+            lines = [line.strip() for line in file.readlines() if line.strip() and not line.startswith('#')]
+            if lines:
+                return itertools.cycle(lines)
+            else:
+                return itertools.cycle(["No autoreply messages found in the file."])
+    except FileNotFoundError:
+        return itertools.cycle(["The file 'autoreply.txt' was not found."])
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -50,9 +64,11 @@ class MyClient(discord.Client):
 {y}[{Fore.GREEN}!{y}]{w} SelftBot Online!""")
 
     async def on_message(self, message):
-        if message.author != self.user:
-            return
-        
+        if (message.author != self.user) and (message.channel.id in autoreply_status and autoreply_status[message.channel.id]):
+            generator = autoreply_generators.get(message.channel.id)
+            if generator:
+                autoreply_message = next(generator)
+                await message.reply(autoreply_message)        
             
         if message.content == f"{prefix}help":
             await message.delete()
@@ -70,7 +86,8 @@ class MyClient(discord.Client):
             embed = f"""**GENERAL COMMANDS | Prefix: `{prefix}`**\n
         > :handshake: `{prefix}help <category>`\n*Returns all commands of that category*
         > :electric_plug: `{prefix}ping`\n*Returns the bot's latency*
-        > :hourglass: `{prefix}uptime`\n*Return how long the selfbot has been running*"""
+        > :hourglass: `{prefix}uptime`\n*Return how long the selfbot has been running*
+        > :repeat: `{prefix}autoreply <ON|OFF>`\n*Enable or disable automatic replies. When enabled, reply to every message in the channel, DM, or group with the next line from the `autoreply.txt` file, cycling through all lines*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help useful":
             await message.delete()
@@ -570,6 +587,24 @@ class MyClient(discord.Client):
                     await message.channel.send("> **[**ERROR**]**: The number must be between 1 and 100.", delete_after=5)
             else:
                 await message.channel.send("> **[**ERROR**]**: Please specify a valid number of messages to delete.", delete_after=5)
+
+
+        elif message.content.startswith(f"{prefix}autoreply"):
+            await message.delete()
+            command = message.content[len(f"{prefix}autoreply "):].strip().upper()
+            if command == "ON":
+                autoreply_status[message.channel.id] = True
+                autoreply_generators[message.channel.id] = autoreply_generator()
+                await message.channel.send("> **Autoreply has been enabled.**", delete_after=5)
+            elif command == "OFF":
+                if message.channel.id in autoreply_status:
+                    autoreply_status.pop(message.channel.id)
+                    autoreply_generators.pop(message.channel.id, None)
+                    await message.channel.send("> **Autoreply has been disabled.**", delete_after=5)
+                else:
+                    await message.channel.send("> **Autoreply was not enabled.**", delete_after=5)
+            else:
+                await message.channel.send("> **[**ERROR**]**: Invalid command. Use `autoreply ON` or `autoreply OFF`.", delete_after=5)
 
 
         elif message.content == f"{prefix}shrug":
