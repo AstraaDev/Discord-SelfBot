@@ -9,6 +9,7 @@ import string
 import time
 import datetime
 from colorama import Fore
+import platform
 
 y = Fore.LIGHTYELLOW_EX
 b = Fore.LIGHTBLUE_EX
@@ -25,8 +26,12 @@ start_time = datetime.datetime.utcnow()
 
 class MyClient(discord.Client):
     async def on_ready(self):
-        ctypes.windll.kernel32.SetConsoleTitleW(f"SelfBot v{__version__} - Made By Astraa")
-        os.system('cls')
+        if platform.system() == "Windows":
+            ctypes.windll.kernel32.SetConsoleTitleW(f"SelfBot v{__version__} - Made By Astraa")
+            os.system('cls')
+        else:
+            print(f"SelfBot v{__version__} - Made By Astraa")
+            os.system('clear')
         print(f"""\n\n{Fore.RESET}                            ██████╗ ████████╗██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
                            ██╔═══██╗╚══██╔══╝██║██╔═══██╗    ╚══██╔══╝██╔═══██╗██╔═══██╗██║     
                            ██║██╗██║   ██║   ██║██║   ██║       ██║   ██║   ██║██║   ██║██║     
@@ -74,7 +79,8 @@ class MyClient(discord.Client):
         > :gear: `{prefix}geoip <ip>`\n*Looks up the ip's location*
         > :globe_with_meridians: `{prefix}pingweb <website-url>`\n*Pings a website to see if it's up*
         > :cyclone: `{prefix}gentoken <user>`\n*Returns the user's token* 
-        > :no_entry: `{prefix}quickdelete <message>`\n*Quickly delete your message after sending it*"""
+        > :no_entry: `{prefix}quickdelete <message>`\n*Quickly delete your message after sending it*
+        > :frame_photo: `{prefix}usericon <user>`\n*Returns the avatar icon of the specified user*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help atio":
             await message.delete()
@@ -199,6 +205,13 @@ class MyClient(discord.Client):
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `quickdelete <message>`')
                 return
             await message.channel.send(content, delete_after=2)
+        elif message.content.startswith(f"{prefix}usericon"):
+            if not message.mentions:
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `usericon <@user>`')
+                return
+            user = message.mentions[0]
+            avatar_url = user.avatar.url if user.avatar else user.default_avatar.url
+            await message.channel.send(f"{user.mention}'s avatar:\n{avatar_url}")
 
 
         elif message.content.startswith(f"{prefix}tokeninfo"):
