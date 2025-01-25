@@ -111,6 +111,7 @@ class MyClient(discord.Client):
         elif message.content == f"{prefix}help server":
             await message.delete()
             embed = f"""**SERVER COMMANDS | Prefix: `{prefix}`**\n
+        > :busts_in_silhouette: `{prefix}fetchmembers`\n*Retrieve the list of all members*
         > :writing_hand: `{prefix}spam <amount> <message>`\n*Spams a message*
         > :barber: `{prefix}guildicon`\n*Scrape Guild icon*
         > :city_sunset: `{prefix}guildbanner`\n*Scrape Guild banner*
@@ -496,6 +497,26 @@ class MyClient(discord.Client):
             await message.channel.send(content)
         
 
+        elif message.content.startswith(f"{prefix}fetchmembers"):
+            if not message.guild:
+                await message.channel.send(f'> **[**ERROR**]**: This command can only be used in a server.')
+                return
+            members = message.guild.members
+            member_data = []
+            for member in members:
+                member_info = {
+                    "name": member.name,
+                    "id": str(member.id),
+                    "avatar_url": str(member.avatar.url) if member.avatar else str(member.default_avatar.url),
+                    "discriminator": member.discriminator,
+                    "status": str(member.status),
+                    "joined_at": str(member.joined_at)
+                }
+                member_data.append(member_info)
+            with open("members_list.json", "w", encoding="utf-8") as f:
+                json.dump(member_data, f, indent=4)
+            await message.channel.send("List of members:", file=discord.File("members_list.json"))
+            os.remove("members_list.json")
         elif message.content.startswith(f"{prefix}spam"):
             await message.delete()
             content = message.content[len(f"{prefix}spam "):].strip()
