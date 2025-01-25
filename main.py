@@ -160,7 +160,7 @@ class MyClient(discord.Client):
             await message.delete()
             addr = message.content[len(f"{prefix}geoip "):].strip()
             if addr is None:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `geoip <ip>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `geoip <ip>`', delete_after=5)
                 return
             try:
                 r = requests.get(f'http://ip-api.com/json/{addr}')
@@ -176,17 +176,17 @@ class MyClient(discord.Client):
         > :electric_plug: `As`\n*{geo['as']}*"""
                 await message.channel.send(embed, file=discord.File("img/astraa.gif"))
             except Exception as e:
-                 await message.channel.send(f'> **[**ERROR**]**: Unable to geolocate ip\n> __Error__: `{str(e)}`')
+                 await message.channel.send(f'> **[**ERROR**]**: Unable to geolocate ip\n> __Error__: `{str(e)}`', delete_after=5)
         elif message.content.startswith(f"{prefix}pingweb"):
             await message.delete()
             addr = message.content[len(f"{prefix}pingweb "):].strip()
             if addr is None:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `pingweb <website>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `pingweb <website>`', delete_after=5)
                 return
             try:
                 r = requests.get(addr).status_code
             except Exception as e:
-                 await message.channel.send(f'> **[**ERROR**]**: Unable to ping website\n> __Error__: `{str(e)}`')
+                 await message.channel.send(f'> **[**ERROR**]**: Unable to ping website\n> __Error__: `{str(e)}`', delete_after=5)
             if r == 404:
                 await message.channel.send(f'Website **down** *({r})*')
             else:
@@ -203,12 +203,12 @@ class MyClient(discord.Client):
             await message.delete()
             content = message.content[len(f"{prefix}quickdelete "):].strip()
             if not content:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `quickdelete <message>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `quickdelete <message>`', delete_after=5)
                 return
             await message.channel.send(content, delete_after=2)
         elif message.content.startswith(f"{prefix}usericon"):
             if not message.mentions:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `usericon <@user>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `usericon <@user>`', delete_after=5)
                 return
             user = message.mentions[0]
             avatar_url = user.avatar.url if user.avatar else user.default_avatar.url
@@ -219,7 +219,7 @@ class MyClient(discord.Client):
             await message.delete()
             usertoken = message.content[len(f"{prefix}tokeninfo "):].strip()
             if not usertoken:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `tokeninfo <token>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `tokeninfo <token>`', delete_after=5)
                 return
             headers = {'Authorization': usertoken,'Content-Type': 'application/json'}
             languages = {
@@ -255,7 +255,7 @@ class MyClient(discord.Client):
             try:
                 res = requests.get('https://discordapp.com/api/v6/users/@me', headers=headers)
             except:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Erro__: `An error occurred while sending request`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Erro__: `An error occurred while sending request`', delete_after=5)
                 return
             if res.status_code == 200:
                 res_json = res.json()
@@ -290,20 +290,20 @@ class MyClient(discord.Client):
         > :paperclip: __Other__\n\tLocale: `{locale} ({language})`\n\tEmail Verified: `{verified}`"""
                     await message.channel.send(embed, file=discord.File("img/astraa.gif"))
                 except Exception as e:
-                    await message.channel.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: `{str(e)}`')
+                    await message.channel.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: `{str(e)}`', delete_after=5)
             elif res.status_code == 401:
-                await message.channel.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: Invalid token')
+                await message.channel.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: Invalid token', delete_after=5)
             else:
-                await message.channel.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: An error occurred while sending request')
+                await message.channel.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: An error occurred while sending request', delete_after=5)
         elif message.content.startswith(f"{prefix}cleardm"):
             await message.delete()
             amount = message.content[len(f"{prefix}cleardm "):].strip()
-            await message.channel.send(f'> **[**ERROR**]**: cmd under dev') 
+            await message.channel.send(f'> **[**ERROR**]**: cmd under dev', delete_after=5) 
         elif message.content.startswith(f"{prefix}hypesquad"):
             await message.delete()
             house = message.content[len(f"{prefix}hypesquad "):].strip()
             if not house:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}hypesquad <house>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}hypesquad <house>`', delete_after=5)
                 return
             headers = {'Authorization': token, 'Content-Type': 'application/json'}  
             r = requests.get('https://discord.com/api/v8/users/@me', headers=headers)
@@ -316,10 +316,10 @@ class MyClient(discord.Client):
                 elif house == "balance":
                     payload = {'house_id': 3}
                 else:
-                    await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Error__: Hypesquad house must be one of the following: `bravery`, `brilliance`, `balance`')
+                    await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Error__: Hypesquad house must be one of the following: `bravery`, `brilliance`, `balance`', delete_after=5)
                     return
             else:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid status code\n> __Status code__: `{r.status_code}`, expected 200')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid status code\n> __Status code__: `{r.status_code}`, expected 200', delete_after=5)
                 return
             r = requests.post('https://discordapp.com/api/v6/hypesquad/online', headers=headers, json=payload, timeout=10)
             if r.status_code == 204:
@@ -338,7 +338,7 @@ class MyClient(discord.Client):
             await message.delete()
             webhook = message.content[len(f"{prefix}whremove "):].strip()
             if not webhook:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}whremove <webhook>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}whremove <webhook>`', delete_after=5)
                 return
             requests.delete(webhook.rstrip())
             await message.channel.send(f'Webhook has been deleted!')
@@ -348,14 +348,14 @@ class MyClient(discord.Client):
             await message.delete()
             content = message.content[len(f"{prefix}hidemention "):].strip()
             if not content:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}hidemention <message>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}hidemention <message>`', delete_after=5)
                 return
             await message.channel.send(content + ('||\u200b||' * 200) + '@everyone')
         elif message.content.startswith(f"{prefix}edit"):
             await message.delete()
             content = message.content[len(f"{prefix}edit "):].strip()
             if not content:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}edit <message>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}edit <message>`', delete_after=5)
                 return
             text = await message.channel.send(content)
             await text.edit(content=f"\u202b{content}")
@@ -477,7 +477,7 @@ class MyClient(discord.Client):
             await message.delete()
             content = message.content[len(f"{prefix}1337 "):].strip()
             if not content:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}1337 <message>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}1337 <message>`', delete_after=5)
                 return
             content = content.replace('a', '4').replace('A', '4').replace('e', '3').replace('E', '3').replace('i', '1').replace('I', '1').replace('o', '0').replace('O', '0').replace('t', '7').replace('T', '7').replace('b', '8').replace('B', '8')
             await message.channel.send(content)
@@ -495,7 +495,7 @@ class MyClient(discord.Client):
             await message.delete()
             content = message.content[len(f"{prefix}reverse "):].strip()
             if not content:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}reverse <message>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}reverse <message>`', delete_after=5)
                 return
             content = content[::-1]
             await message.channel.send(content)
@@ -503,7 +503,7 @@ class MyClient(discord.Client):
 
         elif message.content.startswith(f"{prefix}fetchmembers"):
             if not message.guild:
-                await message.channel.send(f'> **[**ERROR**]**: This command can only be used in a server.')
+                await message.channel.send(f'> **[**ERROR**]**: This command can only be used in a server.', delete_after=5)
                 return
             members = message.guild.members
             member_data = []
@@ -528,10 +528,10 @@ class MyClient(discord.Client):
                 amount, message_to_send = content.split(" ", 1)
                 amount = int(amount)
             except ValueError:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}spam <amount> <message>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}spam <amount> <message>`', delete_after=5)
                 return
             if amount <= 0 or amount > 9:
-                await message.channel.send(f"> **[**ERROR**]**: Amount must be between 1 and 9")
+                await message.channel.send(f"> **[**ERROR**]**: Amount must be between 1 and 9", delete_after=5)
                 return
             for _ in range(amount):
                 await message.channel.send(message_to_send)
@@ -545,20 +545,31 @@ class MyClient(discord.Client):
             await message.delete()
             name = message.content[len(f"{prefix}guildrename "):].strip()
             if not name:
-                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}guildrename <name>`')
+                await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}guildrename <name>`', delete_after=5)
                 return
             if not message.guild.me.guild_permissions.manage_guild:
-                await message.channel.send(f'> **[**ERROR**]**: Missing permissions')
+                await message.channel.send(f'> **[**ERROR**]**: Missing permissions', delete_after=5)
                 return
             try:
                 await message.guild.edit(name=name)
                 await message.channel.send(f"Server renamed to '{name}'")
             except Exception as e:
-                 await message.channel.send(f'> **[**ERROR**]**: Unable to rename the server\n> __Error__: `{str(e)}`')
+                 await message.channel.send(f'> **[**ERROR**]**: Unable to rename the server\n> __Error__: `{str(e)}`, delete_after=5')
         elif message.content.startswith(f"{prefix}purge"):
             await message.delete()
-            amount = message.content[len(f"{prefix}purge "):].strip()
-            await message.channel.send(f'> **[**ERROR**]**: cmd under dev') 
+            if not message.author.guild_permissions.manage_messages:
+                await message.channel.send("> **[**ERROR**]**: You do not have permission to delete messages.", delete_after=5)
+                return
+            content = message.content[len(f"{prefix}purge "):].strip()
+            if content.isdigit():
+                num_messages = int(content)
+                if 1 <= num_messages <= 100:
+                    deleted_messages = await message.channel.purge(limit=num_messages)
+                    await message.channel.send(f"> **{len(deleted_messages)}** messages have been deleted.", delete_after=5)
+                else:
+                    await message.channel.send("> **[**ERROR**]**: The number must be between 1 and 100.", delete_after=5)
+            else:
+                await message.channel.send("> **[**ERROR**]**: Please specify a valid number of messages to delete.", delete_after=5)
 
 
         elif message.content == f"{prefix}shrug":
