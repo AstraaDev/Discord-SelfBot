@@ -93,6 +93,7 @@ By using this SelfBot, you agree that you hold responsibility and accountability
   <summary>Server Commands</summary>
 
 ```js
+- fetchmembers
 - spam <amount>
 - guildicon
 - guildbanner
