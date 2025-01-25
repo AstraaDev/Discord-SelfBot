@@ -49,6 +49,7 @@ By using this SelfBot, you agree that you hold responsibility and accountability
 - pingweb <website-url>
 - gentoken <user>
 - quickdelete <message>
+- usericon <@user>
 - rolecolor <role>
 ```
 </details>
