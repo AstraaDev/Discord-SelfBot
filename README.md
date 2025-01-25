@@ -82,7 +82,7 @@ By using this SelfBot, you agree that you hold responsibility and accountability
 ```js
 - 9/11
 - cum
-- minesweeper
+- minesweeper <grid size>
 - 1337 <message>
 - dick <user>
 - reverse <message>
