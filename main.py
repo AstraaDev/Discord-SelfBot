@@ -16,27 +16,21 @@ y = Fore.LIGHTYELLOW_EX
 b = Fore.LIGHTBLUE_EX
 w = Fore.LIGHTWHITE_EX
 
-with open('config.json') as f:
-    config = json.load(f)
-
 __version__ = "2.1"
-token = config.get('token')
-prefix = config.get('prefix')
+
+with open("config/config.json", "r") as file:
+    config = json.load(file)
+    token = config.get('token')
+    prefix = config.get('prefix')
+with open("config/autoreply-config.json", "r") as file:
+    config = json.load(file)
+message_generator = itertools.cycle(config["messages"])
 
 start_time = datetime.datetime.utcnow()
-autoreply_status = {}
-autoreply_generators = {}
 
-def autoreply_generator():
-    try:
-        with open("autoreply.txt", "r") as file:
-            lines = [line.strip() for line in file.readlines() if line.strip() and not line.startswith('#')]
-            if lines:
-                return itertools.cycle(lines)
-            else:
-                return itertools.cycle(["No autoreply messages found in the file."])
-    except FileNotFoundError:
-        return itertools.cycle(["The file 'autoreply.txt' was not found."])
+def save_config(config):
+    with open("config/autoreply-config.json", "w") as file:
+        json.dump(config, file, indent=4)
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -64,11 +58,15 @@ class MyClient(discord.Client):
 {y}[{Fore.GREEN}!{y}]{w} SelftBot Online!""")
 
     async def on_message(self, message):
-        if (message.author != self.user) and (message.channel.id in autoreply_status and autoreply_status[message.channel.id]):
-            generator = autoreply_generators.get(message.channel.id)
-            if generator:
-                autoreply_message = next(generator)
-                await message.reply(autoreply_message)        
+        if message.author != self.user:
+            if str(message.author.id) in config["users"]:
+                autoreply_message = next(message_generator)
+                await message.reply(autoreply_message)
+            elif str(message.channel.id) in config["channels"]:
+                autoreply_message = next(message_generator)
+                await message.reply(autoreply_message)
+            return
+
             
         if message.content == f"{prefix}help":
             await message.delete()
@@ -591,20 +589,43 @@ class MyClient(discord.Client):
 
         elif message.content.startswith(f"{prefix}autoreply"):
             await message.delete()
-            command = message.content[len(f"{prefix}autoreply "):].strip().upper()
+            args = message.content[len(f"{prefix}autoreply "):].strip().split()
+            if len(args) < 1:
+                await message.channel.send("> **[ERROR]**: Invalid command. Use `autoreply ON|OFF [@user]`.", delete_after=5)
+                return
+            command = args[0].upper()
+            user = None
+            if len(args) > 1 and args[1].startswith("<@") and args[1].endswith(">"):
+                user_id = int(args[1][2:-1].replace("!", ""))
+                user = client.get_user(user_id)
             if command == "ON":
-                autoreply_status[message.channel.id] = True
-                autoreply_generators[message.channel.id] = autoreply_generator()
-                await message.channel.send("> **Autoreply has been enabled.**", delete_after=5)
-            elif command == "OFF":
-                if message.channel.id in autoreply_status:
-                    autoreply_status.pop(message.channel.id)
-                    autoreply_generators.pop(message.channel.id, None)
-                    await message.channel.send("> **Autoreply has been disabled.**", delete_after=5)
+                if user:
+                    if str(user.id) not in config["users"]:
+                        config["users"].append(str(user.id))
+                        save_config(config)
+                    await message.channel.send(f"> **Autoreply enabled for user {user.mention}.**", delete_after=5)
                 else:
-                    await message.channel.send("> **Autoreply was not enabled.**", delete_after=5)
+                    if str(message.channel.id) not in config["channels"]:
+                        config["channels"].append(str(message.channel.id))
+                        save_config(config)
+                    await message.channel.send("> **Autoreply has been enabled in this channel.**", delete_after=5)
+            elif command == "OFF":
+                if user:
+                    if str(user.id) in config["users"]:
+                        config["users"].remove(str(user.id))
+                        save_config(config)
+                        await message.channel.send(f"> **Autoreply disabled for user {user.mention}.**", delete_after=5)
+                    else:
+                        await message.channel.send(f"> **[ERROR]**: Autoreply was not enabled for user {user.mention}.**", delete_after=5)
+                else:
+                    if str(message.channel.id) in config["channels"]:
+                        config["channels"].remove(str(message.channel.id))
+                        save_config(config)
+                        await message.channel.send("> **Autoreply has been disabled in this channel.**", delete_after=5)
+                    else:
+                        await message.channel.send("> **[ERROR]**: Autoreply was not enabled in this channel.**", delete_after=5)
             else:
-                await message.channel.send("> **[**ERROR**]**: Invalid command. Use `autoreply ON` or `autoreply OFF`.", delete_after=5)
+                await message.channel.send("> **[ERROR]**: Invalid command. Use `autoreply ON|OFF [@user]`.", delete_after=5)
 
 
         elif message.content == f"{prefix}shrug":
