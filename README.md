@@ -36,7 +36,7 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 - help <category>
 - ping
 - uptime
-- autoreply <ON/OFF>
+- autoreply ON|OFF [@user]
 ```
 </details>
 
@@ -161,18 +161,18 @@ In Channel 1, if the bot sends the first message, it will send the second and th
 ```
 
 2. **Installation**:
-   - **Automated**: Run `setup.bat`. Launch the new file created.
-   - **Manual**:
-     ```bash
-     $ git clone https://github.com/AstraaDev/Discord-SelfBot.git
-     $ python -m pip install -r requirements.txt
-     $ python selfbot.py
-     ```
+- **Automated**: Run `setup.bat`. Launch the new file created.
+- **Manual**:
+  ```bash
+  $ git clone https://github.com/AstraaDev/Discord-SelfBot.git
+  $ python -m pip install -r requirements.txt
+  $ python selfbot.py
+  ```
 
 ---
 
 ## Example
-<img src="https://cdn.discordapp.com/attachments/1079127307656122501/1326253525541326848/image.png" alt="SelfBot Example" width="400">
+<img src="https://cdn.discordapp.com/attachments/1079127307656122501/1326253525541326848/image.png?ex=67972519&is=6795d399&hm=97739a0ffa2dc302a8b966e32f5223abaec8dc9814e530d0ec4ed18cfdf53037&" alt="SelfBot Example" width="400">
 
 ---
 
