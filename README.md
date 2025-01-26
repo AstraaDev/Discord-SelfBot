@@ -102,18 +102,6 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 ```
 </details>
 
-<details>
-  <summary>Meme Commands</summary>
-
-```
-- shrug
-- lenny
-- fliptable
-- unflip
-- empty
-```
-</details>
-
 ---
 
 ## How To Setup/Install

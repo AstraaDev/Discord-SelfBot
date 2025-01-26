@@ -57,7 +57,7 @@ class MyClient(discord.Client):
         print(f"""
 \t{y}[{w}#{y}]{w} Active Autoreply Channels: {len(config["autoreply"]["channels"])}
 \t{y}[{w}#{y}]{w} Active Autoreply Users: {len(config["autoreply"]["users"])}\n
-\t{y}[{w}#{y}]{w} Total Commands Loaded: 36\n
+\t{y}[{w}#{y}]{w} Total Commands Loaded: 31\n
 
 {y}[{Fore.GREEN}!{y}]{w} SelfBot is now online and ready!""")
 
@@ -80,8 +80,7 @@ class MyClient(discord.Client):
         > :tools: `ATIO`\n*Shows all ATIO Tool commands* (like tokeninfo, serverinfo, ...)
         > :space_invader: `EXPLOIT`\n*Shows all exploit commands* (like hide, edit, bypassblock, ...)
         > :woozy_face: `FUN`\n*Shows all fun commands* (like magik, hack, minesweeper, ...)
-        > :pager: `SERVER`\n*Shows all server commands* (like copy, massban, massdm, ...)
-        > :incoming_envelope: `MESSAGE`\n*Shows all message commands* (like lenny, bold, empty, ...)"""
+        > :pager: `SERVER`\n*Shows all server commands* (like copy, massban, massdm, ...)"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help general":
             await message.delete()
@@ -136,15 +135,6 @@ class MyClient(discord.Client):
         > :city_sunset: `{prefix}guildbanner`\n*Scrape Guild banner*
         > :pencil2: `{prefix}guildrename <name>`\n*Rename server*
         > :wastebasket: `{prefix}purge <amount>`\n*Purges the amount of messages*"""
-            await message.channel.send(embed, file=discord.File("img/astraa.gif"))
-        elif message.content == f"{prefix}help message":
-            await message.delete()
-            embed = f"""**MESSAGE COMMANDS | Prefix: `{prefix}`**\n
-        > :slight_smile: `{prefix}shrug`\n*Returns ¯\_(ツ)_/¯*
-        > :smile: `{prefix}lenny`\n*Returns ( ͡° ͜ʖ ͡°)*
-        > :hushed: `{prefix}fliptable`\n*returns (╯°□°）╯︵ ┻━┻*
-        > :unamused: `{prefix}unflip`\n*returns ┬─┬ ノ( ゜-゜ノ)*
-        > :ghost: `{prefix}empty`\n*Send a empty message*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         
         
@@ -635,22 +625,6 @@ class MyClient(discord.Client):
             else:
                 await message.channel.send("> **[ERROR]**: Invalid command. Use `autoreply ON|OFF [@user]`.", delete_after=5)
 
-
-        elif message.content == f"{prefix}shrug":
-            await message.delete()
-            await message.channel.send("¯\_(ツ)_/¯")
-        elif message.content == f"{prefix}lenny":
-            await message.delete()
-            await message.channel.send("( ͡° ͜ʖ ͡°)")
-        elif message.content == f"{prefix}fliptable":
-            await message.delete()
-            await message.channel.send("(╯°□°）╯︵ ┻━┻")
-        elif message.content == f"{prefix}unflip":
-            await message.delete()
-            await message.channel.send("┬─┬ ノ( ゜-゜ノ)")
-        elif message.content == f"{prefix}empty":
-            await message.delete()
-            await message.channel.send(chr(173))
 
 client = MyClient()
 client.run(token)
