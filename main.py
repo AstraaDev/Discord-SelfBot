@@ -71,9 +71,11 @@ class MyClient(discord.Client):
                 await message.reply(autoreply_message)
             return
 
-            
         if message.content == f"{prefix}help":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**Astraa SelfBot | Prefix: `{prefix}`**\n
         > :pushpin: `GENERAL`\n*Shows all general commands* (like prefix, shutdown, ...)
         > :notepad_spiral: `USEFUL`\n*Shows all useful commands* (like tts, hastebin, nitro, ...)
@@ -83,7 +85,10 @@ class MyClient(discord.Client):
         > :pager: `SERVER`\n*Shows all server commands* (like copy, massban, massdm, ...)"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help general":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**GENERAL COMMANDS | Prefix: `{prefix}`**\n
         > :handshake: `{prefix}help <category>`\n*Returns all commands of that category*
         > :electric_plug: `{prefix}ping`\n*Returns the bot's latency*
@@ -91,7 +96,10 @@ class MyClient(discord.Client):
         > :repeat: `{prefix}autoreply <ON|OFF>`\n*Enable or disable automatic replies. When enabled, reply to every message in the channel, DM, or group with the next line from the `autoreply.txt` file, cycling through all lines*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help useful":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**USEFUL COMMANDS | Prefix: `{prefix}`**\n
         > :cold_face: `{prefix}astraa`\n*Show my social networks* 
         > :gear: `{prefix}geoip <ip>`\n*Looks up the ip's location*
@@ -101,7 +109,10 @@ class MyClient(discord.Client):
         > :frame_photo: `{prefix}usericon <user>`\n*Returns the avatar icon of the specified user*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help atio":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**ATIO COMMANDS | Prefix: `{prefix}`**\n
         > :page_facing_up: `{prefix}tokeninfo <token>`\n*Scrape info with a token*
         > :broom: `{prefix}cleardm <amount>`\n*Delete all dm with a user*
@@ -111,13 +122,19 @@ class MyClient(discord.Client):
         > :wastebasket: `{prefix}whremove <webhook>`\n*Delete the selected webhook*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help exploit":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**EXPLOIT COMMANDS | Prefix: `{prefix}`**\n
         > :detective: `{prefix}hidemention <display> <hidden>`\n*Hide messages inside other messages*
         > :wrench: `{prefix}edit <message>`\n*Move the position of the (edited) tag*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help fun":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**FUN COMMANDS | Prefix: `{prefix}`**\n
         > :airplane: `{prefix}9/11`\n*Sends a 9/11 attack*
         > :sweat_drops: `{prefix}cum`\n*Makes you cum*
@@ -127,7 +144,10 @@ class MyClient(discord.Client):
         > :recycle: `{prefix}reverse <message>`\n*Sends the message but in reverse-order*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help server":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**SERVER COMMANDS | Prefix: `{prefix}`**\n
         > :busts_in_silhouette: `{prefix}fetchmembers`\n*Retrieve the list of all members*
         > :writing_hand: `{prefix}spam <amount> <message>`\n*Spams a message*
@@ -139,7 +159,10 @@ class MyClient(discord.Client):
         
         
         elif message.content == f"{prefix}uptime":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             now = datetime.datetime.utcnow()
             delta = now - start_time
             hours, remainder = divmod(int(delta.total_seconds()), 3600)
@@ -152,21 +175,30 @@ class MyClient(discord.Client):
             uptime_stamp = time_format.format(d=days, h=hours, m=minutes, s=seconds)
             await message.channel.send(uptime_stamp)
         elif message.content == f"{prefix}ping":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             before = time.monotonic()
             message_to_send = await message.channel.send("Pinging...")
             await message_to_send.edit(content=f"`{int((time.monotonic() - before) * 1000)} ms`")
 
 
         elif message.content == f"{prefix}astraa":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             embed = f"""**MY SOCIAL NETWORKS | Prefix: `{prefix}`**\n
         > :pager: `Discord Server`\n*https://discord.gg/PKR7nM9j9U*
         > :computer: `GitHub Page`\n*https://github.com/AstraaDev*
         > :robot: `SelfBot Project`\n*https://github.com/AstraaDev/Discord-SelfBot*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content.startswith(f"{prefix}geoip"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             addr = message.content[len(f"{prefix}geoip "):].strip()
             if addr is None:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `geoip <ip>`', delete_after=5)
@@ -187,7 +219,10 @@ class MyClient(discord.Client):
             except Exception as e:
                  await message.channel.send(f'> **[**ERROR**]**: Unable to geolocate ip\n> __Error__: `{str(e)}`', delete_after=5)
         elif message.content.startswith(f"{prefix}pingweb"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             addr = message.content[len(f"{prefix}pingweb "):].strip()
             if addr is None:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `pingweb <website>`', delete_after=5)
@@ -201,7 +236,10 @@ class MyClient(discord.Client):
             else:
                 await message.channel.send(f'Website **operational** *({r})*')
         elif message.content.startswith(f"{prefix}gentoken"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             user = message.content[len(f"{prefix}gentoken "):].strip()
             code = "ODA"+random.choice(string.ascii_letters)+''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))+"."+random.choice(string.ascii_letters).upper()+''.join(random.choice(string.ascii_letters + string.digits) for _ in range(5))+"."+''.join(random.choice(string.ascii_letters + string.digits) for _ in range(27))
             if not user:
@@ -209,7 +247,10 @@ class MyClient(discord.Client):
                 return
             await message.channel.send(f"{user}'s token is: ||{''.join(code)}||")
         elif message.content.startswith(f"{prefix}quickdelete"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             content = message.content[len(f"{prefix}quickdelete "):].strip()
             if not content:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `quickdelete <message>`', delete_after=5)
@@ -225,7 +266,10 @@ class MyClient(discord.Client):
 
 
         elif message.content.startswith(f"{prefix}tokeninfo"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             usertoken = message.content[len(f"{prefix}tokeninfo "):].strip()
             if not usertoken:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `tokeninfo <token>`', delete_after=5)
@@ -305,11 +349,17 @@ class MyClient(discord.Client):
             else:
                 await message.channel.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: An error occurred while sending request', delete_after=5)
         elif message.content.startswith(f"{prefix}cleardm"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             amount = message.content[len(f"{prefix}cleardm "):].strip()
             await message.channel.send(f'> **[**ERROR**]**: cmd under dev', delete_after=5) 
         elif message.content.startswith(f"{prefix}hypesquad"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             house = message.content[len(f"{prefix}hypesquad "):].strip()
             if not house:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}hypesquad <house>`', delete_after=5)
@@ -334,17 +384,26 @@ class MyClient(discord.Client):
             if r.status_code == 204:
                 await message.channel.send(f'Hypesquad House changed to `{house}`!')
         elif message.content == f"{prefix}serverinfo":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             date_format = "%a, %d %b %Y %I:%M %p"
             embed = f"""**SERVER INFORMATIONS | Prefix: `{prefix}`**\n
         > :dividers: __Basic Information__\n\tServer Name: `{message.guild.name}`\n\tServer ID: `{message.guild.id}`\n\tCreation Date: `{message.guild.created_at.strftime(date_format)}`\n\tServer Icon: `{message.guild.icon.url if message.guild.icon.url else "None"} `\n\tServer Owner: `{message.guild.owner}`
         > :page_facing_up: __Others Information__\n\t`{len(message.guild.members)}` Members\n\t`{len(message.guild.roles)}` Roles\n\t`{len(message.guild.text_channels) if message.guild.text_channels else "None"}` Text-Channels\n\t`{len(message.guild.voice_channels) if message.guild.voice_channels else "None"}` Voice-Channels\n\t`{len(message.guild.categories) if message.guild.categories else "None"}` Categories"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}nitro":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             await message.channel.send(f"https://discord.gift/{''.join(random.choices(string.ascii_letters + string.digits, k=16))}")
         elif message.content.startswith(f"{prefix}whremove"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             webhook = message.content[len(f"{prefix}whremove "):].strip()
             if not webhook:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}whremove <webhook>`', delete_after=5)
@@ -354,14 +413,20 @@ class MyClient(discord.Client):
 
 
         elif message.content.startswith(f"{prefix}hidemention"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             content = message.content[len(f"{prefix}hidemention "):].strip()
             if not content:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}hidemention <message>`', delete_after=5)
                 return
             await message.channel.send(content + ('||\u200b||' * 200) + '@everyone')
         elif message.content.startswith(f"{prefix}edit"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             content = message.content[len(f"{prefix}edit "):].strip()
             if not content:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}edit <message>`', delete_after=5)
@@ -371,7 +436,10 @@ class MyClient(discord.Client):
 
 
         elif message.content == f"{prefix}911":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             invis = ""
             frames = [
                 f''':man_wearing_turban::airplane:\t\t\t\t:office:''',
@@ -385,7 +453,10 @@ class MyClient(discord.Client):
                 await asyncio.sleep(0.5)
                 await sent_message.edit(content=frame)
         elif message.content == f"{prefix}cum":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             frames = [
                 '''
     :ok_hand:            :smile:
@@ -455,7 +526,10 @@ class MyClient(discord.Client):
                 await asyncio.sleep(0.5)
                 await sent_message.edit(content=frame)
         elif message.content.startswith(f"{prefix}minesweeper"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             content = message.content[len(f"{prefix}minesweeper "):].strip()
             if content:
                 size = max(min(int(content), 8), 2)
@@ -483,7 +557,10 @@ class MyClient(discord.Client):
                 message_to_send += "\n"
             await message.channel.send(message_to_send)
         elif message.content.startswith(f"{prefix}1337"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             content = message.content[len(f"{prefix}1337 "):].strip()
             if not content:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}1337 <message>`', delete_after=5)
@@ -491,7 +568,10 @@ class MyClient(discord.Client):
             content = content.replace('a', '4').replace('A', '4').replace('e', '3').replace('E', '3').replace('i', '1').replace('I', '1').replace('o', '0').replace('O', '0').replace('t', '7').replace('T', '7').replace('b', '8').replace('B', '8')
             await message.channel.send(content)
         elif message.content.startswith(f"{prefix}dick"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             user = message.content[len(f"{prefix}dick "):].strip()
             if not user:
                 user = message.author.display_name
@@ -501,7 +581,10 @@ class MyClient(discord.Client):
                 dong += "="
             await message.channel.send(f"**{user}**'s Dick size\n8{dong}D")
         elif message.content.startswith(f"{prefix}reverse"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             content = message.content[len(f"{prefix}reverse "):].strip()
             if not content:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}reverse <message>`', delete_after=5)
@@ -531,7 +614,10 @@ class MyClient(discord.Client):
             await message.channel.send("List of members:", file=discord.File("members_list.json"))
             os.remove("members_list.json")
         elif message.content.startswith(f"{prefix}spam"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             content = message.content[len(f"{prefix}spam "):].strip()
             try:
                 amount, message_to_send = content.split(" ", 1)
@@ -545,13 +631,22 @@ class MyClient(discord.Client):
             for _ in range(amount):
                 await message.channel.send(message_to_send)
         elif message.content == f"{prefix}guildicon":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             await message.channel.send(f"**{message.guild.name} icon :**\n{message.guild.icon.url if message.guild.icon else '*NO ICON*'}")
         elif message.content == f"{prefix}guildbanner":
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             await message.channel.send(f"**{message.guild.name} banner :**\n{message.guild.banner.url if message.guild.banner else '*NO BANNER*'}")
         elif message.content.startswith(f"{prefix}guildrename"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             name = message.content[len(f"{prefix}guildrename "):].strip()
             if not name:
                 await message.channel.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}guildrename <name>`', delete_after=5)
@@ -565,7 +660,10 @@ class MyClient(discord.Client):
             except Exception as e:
                  await message.channel.send(f'> **[**ERROR**]**: Unable to rename the server\n> __Error__: `{str(e)}`, delete_after=5')
         elif message.content.startswith(f"{prefix}purge"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             if not message.author.guild_permissions.manage_messages:
                 await message.channel.send("> **[**ERROR**]**: You do not have permission to delete messages.", delete_after=5)
                 return
@@ -582,7 +680,10 @@ class MyClient(discord.Client):
 
 
         elif message.content.startswith(f"{prefix}autoreply"):
-            await message.delete()
+            try:
+                await message.delete()
+            except:
+                pass
             args = message.content[len(f"{prefix}autoreply "):].strip().split()
             if len(args) < 1:
                 await message.channel.send("> **[ERROR]**: Invalid command. Use `autoreply ON|OFF [@user]`.", delete_after=5)
