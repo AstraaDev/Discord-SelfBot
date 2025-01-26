@@ -116,47 +116,30 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 
 ---
 
-## Autoreply Command
-
-The `autoreply` command lets you set up automatic responses in specific channels or for specific users.
-
-### Usage
-- **Enable autoreply in a channel**: `autoreply ON`
-  - Automatically sends preconfigured messages when someone messages in the channel.
-- **Disable autoreply in a channel**: `autoreply OFF`
-  - Stops automatic replies in the channel.
-- **Enable autoreply for a user**: `autoreply ON @user`
-  - Sends automatic replies to all messages from the specified user, regardless of the channel or DM.
-- **Disable autoreply for a user**: `autoreply OFF @user`
-
-### Configuration
-Messages, channels, and users for autoreply are stored in `config/autoreply-config.json`:
-```json
-{
-  "messages": [
-    "https://github.com/AstraaDev/Discord-SelfBot",
-    "https://discord.gg/PKR7nM9j9U"
-  ],
-  "channels": ["123456789012345678"],
-  "users": ["112233445566778899"]
-}
-```
-- **messages**: List of responses to cycle through.
-- **channels**: Channels where autoreply is active.
-- **users**: Users for whom autoreply is active.
-
-### Example
-In Channel 1, if the bot sends the first message, it will send the second and third messages sequentially. Switching to Channel 2 restarts the cycle from the first message.
-
----
-
 ## How To Setup/Install
 
 1. **Update `config/config.json`**: Enter your bot token and preferred prefix.
 ```json
 {
+    // Your Discord bot token, required to log in to the bot account
     "token": "TOKEN-HERE",
-    "prefix": "PREFIX-HERE"
+    // Prefix used to trigger bot commands (e.g., "*help")
+    "prefix": "PREFIX-HERE",
+    // List of user IDs that the bot will listen to for remote command execution
+    "remote-users": ["USER-ID-1", "USER-ID-2"],
+
+    // Auto-reply configuration for messages, channels, and specific users
+    "autoreply": {
+        // List of messages that the bot will use to auto-reply
+        "messages": [
+            "https://github.com/AstraaDev/Discord-SelfBot",
+            "https://discord.gg/PKR7nM9j9U"
+        ],
+        // Channels where the bot will enable auto-reply functionality
+        "channels": ["CHANNEL-ID-1", "CHANNEL-ID-2"],
+        // Users for whom the bot will reply automatically
+        "users": ["USER-ID-1", "USER-ID-2"]
+    }
 }
 ```
 
@@ -171,8 +154,41 @@ In Channel 1, if the bot sends the first message, it will send the second and th
 
 ---
 
-## Example
-<img src="https://cdn.discordapp.com/attachments/1079127307656122501/1326253525541326848/image.png?ex=67972519&is=6795d399&hm=97739a0ffa2dc302a8b966e32f5223abaec8dc9814e530d0ec4ed18cfdf53037&" alt="SelfBot Example" width="400">
+## Command Execution via Remote User
+
+This SelfBot supports executing commands remotely if you are listed in the `remote-users` array in `config/config.json`. 
+
+### Example
+1. Add your Discord user ID to `remote-users` in the configuration file.
+2. From another account, type `*help` (assuming `*` is the prefix). If you are in the list, you can execute commands.
+
+---
+
+## Autoreply Command
+
+The `autoreply` command lets you set up automatic responses in specific channels or for specific users.
+
+### Usage
+- **Enable autoreply in a channel**: `autoreply ON`
+  - Automatically sends preconfigured messages when someone messages in the channel.
+- **Disable autoreply in a channel**: `autoreply OFF`
+  - Stops automatic replies in the channel.
+- **Enable autoreply for a user**: `autoreply ON @user`
+  - Sends automatic replies to all messages from the specified user, regardless of the channel or DM.
+- **Disable autoreply for a user**: `autoreply OFF @user`
+
+### Configuration
+Messages, channels, and users for autoreply are stored in `config/config.json`:
+```json
+{
+  "messages": [
+    "https://github.com/AstraaDev/Discord-SelfBot",
+    "https://discord.gg/PKR7nM9j9U"
+  ],
+  "channels": ["123456789012345678"],
+  "users": ["112233445566778899"]
+}
+```
 
 ---
 
@@ -184,4 +200,3 @@ In Channel 1, if the bot sends the first message, it will send the second and th
 
 ## Credits
 This project is a restructured and improved version of the original [@humza1400](https://github.com/humza1400) SelfBot (2019).
-

@@ -16,29 +16,23 @@ y = Fore.LIGHTYELLOW_EX
 b = Fore.LIGHTBLUE_EX
 w = Fore.LIGHTWHITE_EX
 
-__version__ = "2.1"
+__version__ = "2.2"
 
 with open("config/config.json", "r") as file:
     config = json.load(file)
     token = config.get('token')
     prefix = config.get('prefix')
-with open("config/autoreply-config.json", "r") as file:
-    config = json.load(file)
-message_generator = itertools.cycle(config["messages"])
+    message_generator = itertools.cycle(config["autoreply"]["messages"])
 
-start_time = datetime.datetime.utcnow()
-
-def save_config(config):
-    with open("config/autoreply-config.json", "w") as file:
-        json.dump(config, file, indent=4)
+start_time = datetime.datetime.utcnow() 
 
 class MyClient(discord.Client):
     async def on_ready(self):
         if platform.system() == "Windows":
-            ctypes.windll.kernel32.SetConsoleTitleW(f"SelfBot v{__version__} - Made By Astraa")
+            ctypes.windll.kernel32.SetConsoleTitleW(f"SelfBot v{__version__} - Made By a5traa")
             os.system('cls')
         else:
-            print(f"SelfBot v{__version__} - Made By Astraa")
+            print(f"SelfBot v{__version__} - Made By a5traa")
             os.system('clear')
         print(f"""\n\n{Fore.RESET}                            ██████╗ ████████╗██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
                            ██╔═══██╗╚══██╔══╝██║██╔═══██╗    ╚══██╔══╝██╔═══██╗██╔═══██╗██║     
@@ -47,22 +41,32 @@ class MyClient(discord.Client):
                            ╚█║████╔╝   ██║   ██║╚██████╔╝       ██║   ╚██████╔╝╚██████╔╝███████╗
                             ╚╝╚═══╝    ╚═╝   ╚═╝ ╚═════╝        ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝\n""".replace('█', f'{b}█{y}'))
         print(f"""{y}------------------------------------------------------------------------------------------------------------------------\n{w}raadev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://git\n{y}------------------------------------------------------------------------------------------------------------------------\n""")
-        print(f"""{y}[{b}+{y}]{w} SelfBot Informations:\n
+        print(f"""{y}[{b}+{y}]{w} SelfBot Information:\n
 \t{y}[{w}#{y}]{w} Version: v{__version__}
-\t{y}[{w}#{y}]{w} Logged in as: {self.user}
-\t{y}[{w}#{y}]{w} User ID: {self.user.id}\n\n
-{y}[{b}+{y}]{w} Settings View:\n
-\t{y}[{w}#{y}]{w} SelfBot Prefix: {prefix}
+\t{y}[{w}#{y}]{w} Logged in as: {self.user} ({self.user.id})
 \t{y}[{w}#{y}]{w} Cached Users: {len(self.users)}
-\t{y}[{w}#{y}]{w} Guilds Scraped: {len(self.guilds)}\n\n\n
-{y}[{Fore.GREEN}!{y}]{w} SelftBot Online!""")
+\t{y}[{w}#{y}]{w} Guilds Connected: {len(self.guilds)}\n\n
+{y}[{b}+{y}]{w} Settings Overview:\n
+\t{y}[{w}#{y}]{w} SelfBot Prefix: {prefix}
+\t{y}[{w}#{y}]{w} Remote Users Configured:""")
+        if config["remote-users"]:
+            for i, user_id in enumerate(config["remote-users"], start=1):
+                print(f"\t\t{y}[{w}{i}{y}]{w} User ID: {user_id}")
+        else:
+            print(f"\t\t{y}[{w}-{y}]{w} No remote users configured.")
+        print(f"""
+\t{y}[{w}#{y}]{w} Active Autoreply Channels: {len(config["autoreply"]["channels"])}
+\t{y}[{w}#{y}]{w} Active Autoreply Users: {len(config["autoreply"]["users"])}\n
+\t{y}[{w}#{y}]{w} Total Commands Loaded: 36\n
+
+{y}[{Fore.GREEN}!{y}]{w} SelfBot is now online and ready!""")
 
     async def on_message(self, message):
-        if message.author != self.user:
-            if str(message.author.id) in config["users"]:
+        if message.author != self.user and str(message.author.id) not in config["remote-users"]:
+            if str(message.author.id) in config["autoreply"]["users"]:
                 autoreply_message = next(message_generator)
                 await message.reply(autoreply_message)
-            elif str(message.channel.id) in config["channels"]:
+            elif str(message.channel.id) in config["autoreply"]["channels"]:
                 autoreply_message = next(message_generator)
                 await message.reply(autoreply_message)
             return
@@ -600,27 +604,31 @@ class MyClient(discord.Client):
                 user = client.get_user(user_id)
             if command == "ON":
                 if user:
-                    if str(user.id) not in config["users"]:
-                        config["users"].append(str(user.id))
-                        save_config(config)
+                    if str(user.id) not in config["autoreply"]["users"]:
+                        config["autoreply"]["users"].append(str(user.id))
+                        with open("config/config.json", "w") as file:
+                            json.dump(config, file, indent=4)
                     await message.channel.send(f"> **Autoreply enabled for user {user.mention}.**", delete_after=5)
                 else:
-                    if str(message.channel.id) not in config["channels"]:
-                        config["channels"].append(str(message.channel.id))
-                        save_config(config)
+                    if str(message.channel.id) not in config["autoreply"]["channels"]:
+                        config["autoreply"]["channels"].append(str(message.channel.id))
+                        with open("config/config.json", "w") as file:
+                            json.dump(config, file, indent=4)
                     await message.channel.send("> **Autoreply has been enabled in this channel.**", delete_after=5)
             elif command == "OFF":
                 if user:
-                    if str(user.id) in config["users"]:
-                        config["users"].remove(str(user.id))
-                        save_config(config)
+                    if str(user.id) in config["autoreply"]["users"]:
+                        config["autoreply"]["users"].remove(str(user.id))
+                        with open("config/config.json", "w") as file:
+                            json.dump(config, file, indent=4)
                         await message.channel.send(f"> **Autoreply disabled for user {user.mention}.**", delete_after=5)
                     else:
                         await message.channel.send(f"> **[ERROR]**: Autoreply was not enabled for user {user.mention}.**", delete_after=5)
                 else:
-                    if str(message.channel.id) in config["channels"]:
-                        config["channels"].remove(str(message.channel.id))
-                        save_config(config)
+                    if str(message.channel.id) in config["autoreply"]["channels"]:
+                        config["autoreply"]["channels"].remove(str(message.channel.id))
+                        with open("config/config.json", "w") as file:
+                            json.dump(config, file, indent=4)
                         await message.channel.send("> **Autoreply has been disabled in this channel.**", delete_after=5)
                     else:
                         await message.channel.send("> **[ERROR]**: Autoreply was not enabled in this channel.**", delete_after=5)
