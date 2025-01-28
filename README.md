@@ -30,79 +30,40 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 ## Features
 
 <details>
-  <summary>General Commands</summary>
+  <summary>All Commands</summary>
 
-```
-- help <category>
-- ping
-- uptime
-- autoreply ON|OFF [@user]
-- remoteuser ADD|REMOVE @user(s)
-- afk ON|OFF
-```
-</details>
-
-<details>
-  <summary>Useful Commands</summary>
-
-```
-- astraa
-- geoip <ip>
-- pingweb <website-url>
-- gentoken <user>
-- quickdelete <message>
-- usericon <@user>
-- rolecolor <role>
-- tts <message>
-- qr <message>
-```
-</details>
-
-<details>
-  <summary>ATIO Commands</summary>
-
-```
-- tokeninfo <token>
-- cleardm <amount>
-- hypesquad <house>
-- serverinfo
-- nitro
-- webhookremove <webhook>
-```
-</details>
-
-<details>
-  <summary>Exploit Commands</summary>
-
-```
-- hide <display> <hidden>
-- edit <message>
-```
-</details>
-
-<details>
-  <summary>Fun Commands</summary>
-
-```
-- 9/11
-- minesweeper <grid size>
-- 1337 <message>
-- dick <user>
-- reverse <message>
-```
-</details>
-
-<details>
-  <summary>Server Commands</summary>
-
-```
-- fetchmembers
-- spam <amount>
-- guildicon
-- guildbanner
-- guildname <name>
-- purge <amount>
-```
+    > :space_invader: `{prefix}astraa` - Show my social networks.  
+> :notepad_spiral: `{prefix}uptime` - Returns how long the selfbot has been running.  
+> :closed_lock_with_key: `{prefix}remoteuser <@user>` - Authorize a user to execute commands remotely.  
+> :pushpin: `{prefix}ping` - Returns the bot's latency.  
+> :pushpin: `{prefix}pingweb <url>` - Ping a website and return the HTTP status code (e.g., 200 if online).  
+> :gear: `{prefix}geoip <ip>` - Looks up the IP's location.  
+> :microphone: `{prefix}tts <text>` - Converts text to speech and sends an audio file (.wav).  
+> :hash: `{prefix}qr <text>` - Generate a QR code from the provided text and send it as an image.  
+> :detective: `{prefix}hidemention <display_part> <hidden_part>` - Hide messages inside other messages.  
+> :wrench: `{prefix}edit <message>` - Move the position of the (edited) tag.  
+> :arrows_counterclockwise: `{prefix}reverse <message>` - Reverse the letters of a message.  
+> :notepad_spiral: `{prefix}gentoken` - Generate an invalid but correctly patterned token.  
+> :woozy_face: `{prefix}hypesquad <house>` - Change your HypeSquad badge.  
+> :dart: `{prefix}nitro` - Generate a fake Nitro code.  
+> :hammer: `{prefix}whremove <webhook_url>` - Remove a webhook.  
+> :broom: `{prefix}purge <amount>` - Delete a specific number of messages.  
+> :broom: `{prefix}cleardm <amount>` - Delete all DMs with a user.  
+> :writing_hand: `{prefix}spam <amount> <message>` - Spams a message for a given amount of times.  
+> :tools: `{prefix}quickdelete <message>` - Send a message and delete it after 2 seconds.  
+> :tools: `{prefix}autoreply <ON|OFF>` - Enable or disable automatic replies.  
+> :zzz: `{prefix}afk <ON/OFF>` - Enable or disable AFK mode. Sends a custom message when receiving a DM or being mentioned.  
+> :busts_in_silhouette: `{prefix}fetchmembers` - Retrieve the list of all members in the server.  
+> :busts_in_silhouette: `{prefix}guildicon` - Get the icon of the current server.  
+> :space_invader: `{prefix}usericon <@user>` - Get the profile picture of a user.  
+> :star: `{prefix}guildbanner` - Get the banner of the current server.  
+> :page_facing_up: `{prefix}tokeninfo <token>` - Scrape info with a token.  
+> :pager: `{prefix}guildinfo` - Get information about the current server.  
+> :memo: `{prefix}guildrename <new_name>` - Rename the server.  
+> :airplane: `{prefix}airplane` - Sends a 9/11 attack (warning: use responsibly).  
+> :fire: `{prefix}dick <@user>` - Show the "size" of a user's dick.  
+> :x: `{prefix}minesweeper <width> <height>` - Play a game of Minesweeper with custom grid size.  
+> :robot: `{prefix}leetpeek <message>` - Speak like a hacker, replacing letters.
 </details>
 
 ---
@@ -148,7 +109,7 @@ By using this SelfBot, you agree that you are responsible for any consequences r
   ```bash
   $ git clone https://github.com/AstraaDev/Discord-SelfBot.git
   $ python -m pip install -r requirements.txt
-  $ python selfbot.py
+  $ python main.py
   ```
 
 ---

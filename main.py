@@ -35,13 +35,20 @@ def save_config(config):
         json.dump(config, file, indent=4)
 
 def selfbot_menu(bot):
-    print(f"""\n\n{Fore.RESET}                            ██████╗ ████████╗██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
+    if platform.system() == "Windows":
+        os.system('cls')
+    else:
+        os.system('clear')
+    print(f"""\n{Fore.RESET}
+                            ██████╗ ████████╗██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
                            ██╔═══██╗╚══██╔══╝██║██╔═══██╗    ╚══██╔══╝██╔═══██╗██╔═══██╗██║     
                            ██║██╗██║   ██║   ██║██║   ██║       ██║   ██║   ██║██║   ██║██║     
                            ██║██║██║   ██║   ██║██║   ██║       ██║   ██║   ██║██║   ██║██║     
                            ╚█║████╔╝   ██║   ██║╚██████╔╝       ██║   ╚██████╔╝╚██████╔╝███████╗
                             ╚╝╚═══╝    ╚═╝   ╚═╝ ╚═════╝        ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝\n""".replace('█', f'{b}█{y}'))
-    print(f"""{y}------------------------------------------------------------------------------------------------------------------------\n{w}raadev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://git\n{y}------------------------------------------------------------------------------------------------------------------------\n""")
+    print(f"""{y}------------------------------------------------------------------------------------------------------------------------
+{w}raadev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com
+{y}------------------------------------------------------------------------------------------------------------------------\n""")
     print(f"""{y}[{b}+{y}]{w} SelfBot Information:\n
 \t{y}[{w}#{y}]{w} Version: v{__version__}
 \t{y}[{w}#{y}]{w} Logged in as: {bot.user} ({bot.user.id})
@@ -59,7 +66,7 @@ def selfbot_menu(bot):
 \t{y}[{w}#{y}]{w} Active Autoreply Channels: {len(config["autoreply"]["channels"])}
 \t{y}[{w}#{y}]{w} Active Autoreply Users: {len(config["autoreply"]["users"])}\n
 \t{y}[{w}#{y}]{w} AFK Status: {'Enabled' if config["afk"]["enabled"] else 'Disabled'}
-\t{y}[{w}#{y}]{w} AFK Message: {config["afk"]["message"]}\n
+\t{y}[{w}#{y}]{w} AFK Message: "{config["afk"]["message"]}"\n
 \t{y}[{w}#{y}]{w} Total Commands Loaded: 33\n\n
 {y}[{Fore.GREEN}!{y}]{w} SelfBot is now online and ready!""")
 
@@ -78,80 +85,76 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if message.author != bot.user and str(message.author.id) not in config["remote-users"]:
-        if config["afk"]["enabled"]:
-            if bot.user in message.mentions:
-                await message.reply(config["afk"]["message"])
-                return
-            elif isinstance(message.channel, discord.DMChannel):
-                await message.reply(config["afk"]["message"])
-                return
-        
+        return
+
+    if config["afk"]["enabled"]:
+        if bot.user in message.mentions:
+            await message.reply(config["afk"]["message"])
+            return
+        elif isinstance(message.channel, discord.DMChannel):
+            await message.reply(config["afk"]["message"])
+            return
+
+    if message.author != bot.user:
         if str(message.author.id) in config["autoreply"]["users"]:
             autoreply_message = next(message_generator)
             await message.reply(autoreply_message)
-        
         elif str(message.channel.id) in config["autoreply"]["channels"]:
             autoreply_message = next(message_generator)
             await message.reply(autoreply_message)
     
     await bot.process_commands(message)
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
 
 
-@bot.command()
-async def help(ctx, category: str = None):
+
+@bot.command(aliases=['h'])
+async def help(ctx):
     await ctx.message.delete()
-    if category is None:
-        embed = f"""**Astraa SelfBot | Prefix: `{prefix}`**\n
-        > :pushpin: `GENERAL`\n*Shows all general commands* (like prefix, shutdown, ...)
-        > :notepad_spiral: `USEFUL`\n*Shows all useful commands* (like tts, hastebin, nitro, ...)
-        > :tools: `ATIO`\n*Shows all ATIO Tool commands* (like tokeninfo, serverinfo, ...)
-        > :space_invader: `EXPLOIT`\n*Shows all exploit commands* (like hide, edit, bypassblock, ...)
-        > :woozy_face: `FUN`\n*Shows all fun commands* (like magik, hack, minesweeper, ...)
-        > :pager: `SERVER`\n*Shows all server commands* (like copy, massban, massdm, ...)"""
-        await ctx.send(embed, file=discord.File("img/astraa.gif"))
-    
-    elif category == "general":
-        embed = f"""**GENERAL COMMANDS | Prefix: `{prefix}`**\n
-        > :handshake: `{prefix}help <category>`\n*Returns all commands of that category*
-        > :electric_plug: `{prefix}ping`\n*Returns the bot's latency*
-        > :hourglass: `{prefix}uptime`\n*Return how long the selfbot has been running*
-        > :repeat: `{prefix}autoreply <ON|OFF>`\n*Enable or disable automatic replies...*"""
-        await ctx.send(embed, file=discord.File("img/astraa.gif"))
-    
-    elif category == "useful":
-        embed = f"""**USEFUL COMMANDS | Prefix: `{prefix}`**\n
-        > :cold_face: `{prefix}astraa`\n*Show my social networks* 
-        > :gear: `{prefix}geoip <ip>`\n*Looks up the ip's location*
-        > :microphone: `{prefix}tts <text>`\n*Converts the provided text to speech and sends an audio file (.wav) of the speech*
-        > :hash: `{prefix}qr <text>` *Generate a QR code from the provided text and send it as an image.*"""
-        await ctx.send(embed, file=discord.File("img/astraa.gif"))
 
-    elif category == "atio":
-        embed = f"""**ATIO COMMANDS | Prefix: `{prefix}`**\n
-        > :page_facing_up: `{prefix}tokeninfo <token>`\n*Scrape info with a token*
-        > :broom: `{prefix}cleardm <amount>`\n*Delete all dm with a user*"""
-        await ctx.send(embed, file=discord.File("img/astraa.gif"))
-    
-    elif category == "exploit":
-        embed = f"""**EXPLOIT COMMANDS | Prefix: `{prefix}`**\n
-        > :detective: `{prefix}hidemention <display> <hidden>`\n*Hide messages inside other messages*
-        > :wrench: `{prefix}edit <message>`\n*Move the position of the (edited) tag*"""
-        await ctx.send(embed, file=discord.File("img/astraa.gif"))
-    
-    elif category == "fun":
-        embed = f"""**FUN COMMANDS | Prefix: `{prefix}`**\n
-        > :airplane: `{prefix}airplane`\n*Sends a 9/11 attack*
-        > :sweat_drops: `{prefix}cum`\n*Makes you cum*"""
-        await ctx.send(embed, file=discord.File("img/astraa.gif"))
-    
-    elif category == "server":
-        embed = f"""**SERVER COMMANDS | Prefix: `{prefix}`**\n
-        > :busts_in_silhouette: `{prefix}fetchmembers`\n*Retrieve the list of all members*
-        > :writing_hand: `{prefix}spam <amount> <message>`\n*Spams a message*"""
-        await ctx.send(embed, file=discord.File("img/astraa.gif"))
-    else:
-        await ctx.send("> **[**ERROR**]**: Invalid category. Use `help` to see all available categories.")
+    help_text = f"""
+**Astraa SelfBot | Prefix: `{prefix}`**\n
+**Commands:**\n
+> :space_invader: `{prefix}astraa` - Show my social networks.
+> :notepad_spiral: `{prefix}uptime` - Returns how long the selfbot has been running.
+> :closed_lock_with_key: `{prefix}remoteuser <@user>` - Authorize a user to execute commands remotely.
+> :pushpin: `{prefix}ping` - Returns the bot's latency.
+> :pushpin: `{prefix}pingweb <url>` - Ping a website and return the HTTP status code (e.g., 200 if online).
+> :gear: `{prefix}geoip <ip>` - Looks up the IP's location.
+> :microphone: `{prefix}tts <text>` - Converts text to speech and sends an audio file (.wav).
+> :hash: `{prefix}qr <text>` - Generate a QR code from the provided text and send it as an image.
+> :detective: `{prefix}hidemention <display_part> <hidden_part>` - Hide messages inside other messages.
+> :wrench: `{prefix}edit <message>` - Move the position of the (edited) tag.
+> :arrows_counterclockwise: `{prefix}reverse <message>` - Reverse the letters of a message.
+> :notepad_spiral: `{prefix}gentoken` - Generate an invalid but correctly patterned token.
+> :woozy_face: `{prefix}hypesquad <house>` - Change your HypeSquad badge."""
+    await ctx.send(help_text)
+
+    help_text = f"""
+> :dart: `{prefix}nitro` - Generate a fake Nitro code.
+> :hammer: `{prefix}whremove <webhook_url>` - Remove a webhook.
+> :broom: `{prefix}purge <amount>` - Delete a specific number of messages.
+> :broom: `{prefix}cleardm <amount>` - Delete all DMs with a user.
+> :writing_hand: `{prefix}spam <amount> <message>` - Spams a message for a given amount of times.
+> :tools: `{prefix}quickdelete <message>` - Send a message and delete it after 2 seconds.
+> :tools: `{prefix}autoreply <ON|OFF>` - Enable or disable automatic replies.
+> :zzz: `{prefix}afk <ON/OFF>` - Enable or disable AFK mode. Sends a custom message when receiving a DM or being mentioned.
+> :busts_in_silhouette: `{prefix}fetchmembers` - Retrieve the list of all members in the server.
+> :busts_in_silhouette: `{prefix}guildicon` - Get the icon of the current server.
+> :space_invader: `{prefix}usericon <@user>` - Get the profile picture of a user.
+> :star: `{prefix}guildbanner` - Get the banner of the current server.
+> :page_facing_up: `{prefix}tokeninfo <token>` - Scrape info with a token.
+> :pager: `{prefix}guildinfo` - Get information about the current server.
+> :memo: `{prefix}guildrename <new_name>` - Rename the server.
+> :airplane: `{prefix}airplane` - Sends a 9/11 attack (warning: use responsibly).
+> :fire: `{prefix}dick <@user>` - Show the "size" of a user's dick.
+> :x: `{prefix}minesweeper <width> <height>` - Play a game of Minesweeper with custom grid size.
+> :robot: `{prefix}leetpeek <message>` - Speak like a hacker, replacing letters."""
+    await ctx.send(help_text)
 
 @bot.command()
 async def uptime(ctx):
@@ -175,7 +178,7 @@ async def ping(ctx):
     message_to_send = await ctx.send("Pinging...")
     await message_to_send.edit(content=f"`{int((time.monotonic() - before) * 1000)} ms`")
 
-@bot.command()
+@bot.command(aliases=['astra'])
 async def astraa(ctx):
     await ctx.message.delete()
     embed = f"""**MY SOCIAL NETWORKS | Prefix: `{prefix}`**\n
@@ -220,7 +223,7 @@ async def tts(ctx, *, content: str = None):
 
     await ctx.send(file=discord.File(f, f"{content[:10]}.wav"))
 
-@bot.command()
+@bot.command(aliases=['qrcode'])
 async def qr(ctx, *, text: str):
     qr = qrcode.make(text)
     
@@ -259,7 +262,7 @@ async def quickdelete(ctx, message_content: str):
         return
     await ctx.send(message_content, delete_after=2)
 
-@bot.command()
+@bot.command(aliases=['uicon'])
 async def usericon(ctx, user: discord.User = None):
     await ctx.message.delete()
     if not user:
@@ -268,7 +271,7 @@ async def usericon(ctx, user: discord.User = None):
     avatar_url = user.avatar.url if user.avatar else user.default_avatar.url
     await ctx.send(f"> {user.mention}'s avatar:\n{avatar_url}")
 
-@bot.command()
+@bot.command(aliases=['tinfo'])
 async def tokeninfo(ctx, *, usertoken: str = None):
     await ctx.message.delete()
     if not usertoken:
@@ -394,7 +397,7 @@ async def cleardm(ctx, *, amount: str = None):
     await ctx.send(f'> **Cleared {deleted_count} messages in DMs.**', delete_after=5)
 
 
-@bot.command()
+@bot.command(aliases=['hs'])
 async def hypesquad(ctx, *, house: str = None):
     await ctx.message.delete()
     if not house:
@@ -430,11 +433,11 @@ async def hypesquad(ctx, *, house: str = None):
     except requests.exceptions.RequestException as e:
         await ctx.send(f'> **[**ERROR**]**: Unable to change Hypesquad house\n> __Error__: `{str(e)}`', delete_after=5)
 
-@bot.command()
-async def serverinfo(ctx):
+@bot.command(aliases=['ginfo'])
+async def guildinfo(ctx):
     await ctx.message.delete()
     date_format = "%a, %d %b %Y %I:%M %p"
-    embed = discord.Embed(title=f"> **SERVER INFORMATIONS | Prefix: `{prefix}`**", color=discord.Color.blue())
+    embed = discord.Embed(title=f"> **GUILD INFORMATIONS | Prefix: `{prefix}`**", color=discord.Color.blue())
     embed.add_field(name=":dividers: __Basic Information__", 
                     value=f"Server Name: `{ctx.guild.name}`\nServer ID: `{ctx.guild.id}`\nCreation Date: `{ctx.guild.created_at.strftime(date_format)}`\nServer Icon: `{ctx.guild.icon.url if ctx.guild.icon.url else 'None'}`\nServer Owner: `{ctx.guild.owner}`", 
                     inline=False)
@@ -457,7 +460,7 @@ async def whremove(ctx, webhook: str):
     requests.delete(webhook.rstrip())
     await ctx.send(f'> Webhook has been deleted!')
 
-@bot.command()
+@bot.command(aliases=['hide'])
 async def hidemention(ctx, *, content: str):
     await ctx.message.delete()
     if not content:
@@ -474,7 +477,7 @@ async def edit(ctx, *, content: str):
     text = await ctx.send(content)
     await text.edit(content=f"\u202b{content}")
 
-@bot.command()
+@bot.command(aliases=['911'])
 async def airplane(ctx):
     await ctx.message.delete()
     frames = [
@@ -489,7 +492,7 @@ async def airplane(ctx):
         await asyncio.sleep(0.5)
         await sent_message.edit(content=frame)
 
-@bot.command()
+@bot.command(aliases=['mine'])
 async def minesweeper(ctx, size: int = 5):
     await ctx.message.delete()
     size = max(min(size, 8), 2)
@@ -515,7 +518,7 @@ async def minesweeper(ctx, size: int = 5):
         message_to_send += "\n"
     await ctx.send(message_to_send)
 
-@bot.command()
+@bot.command(aliases=['leet'])
 async def leetspeak(ctx, *, content: str):
     await ctx.message.delete()
     content = content.replace('a', '4').replace('A', '4').replace('e', '3').replace('E', '3').replace('i', '1').replace('I', '1').replace('o', '0').replace('O', '0').replace('t', '7').replace('T', '7').replace('b', '8').replace('B', '8')
@@ -536,7 +539,7 @@ async def reverse(ctx, *, content: str):
     content = content[::-1]
     await ctx.send(content)
 
-@bot.command()
+@bot.command(aliases=['fetch'])
 async def fetchmembers(ctx):
     await ctx.message.delete()
     if not ctx.guild:
@@ -571,17 +574,17 @@ async def spam(ctx, amount: int, *, message_to_send: str):
     except ValueError:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `!spam <amount> <message>`', delete_after=5)
 
-@bot.command()
+@bot.command(aliases=['gicon'])
 async def guildicon(ctx):
     await ctx.message.delete()
     await ctx.send(f"> **{ctx.guild.name} icon :**\n{ctx.guild.icon.url if ctx.guild.icon else '*NO ICON*'}")
 
-@bot.command()
+@bot.command(aliases=['gbanner'])
 async def guildbanner(ctx):
     await ctx.message.delete()
     await ctx.send(f"> **{ctx.guild.name} banner :**\n{ctx.guild.banner.url if ctx.guild.banner else '*NO BANNER*'}")
 
-@bot.command()
+@bot.command(aliases=['grename'])
 async def guildrename(ctx, *, name: str):
     await ctx.message.delete()
     if not ctx.guild.me.guild_permissions.manage_guild:
@@ -593,7 +596,7 @@ async def guildrename(ctx, *, name: str):
     except Exception as e:
         await ctx.send(f'> **[**ERROR**]**: Unable to rename the server\n> __Error__: `{str(e)}`, delete_after=5')
 
-@bot.command()
+@bot.command(aliases=['clear'])
 async def purge(ctx, num_messages: int):
     await ctx.message.delete()
     if not ctx.author.guild_permissions.manage_messages:
@@ -605,7 +608,7 @@ async def purge(ctx, num_messages: int):
     else:
         await ctx.send("> **[**ERROR**]**: The number must be between 1 and 100.", delete_after=5)
 
-@bot.command()
+@bot.command(aliases=['autor'])
 async def autoreply(ctx, command: str, user: discord.User = None):
     await ctx.message.delete()
     if command.upper() == "ON":
@@ -637,7 +640,7 @@ async def autoreply(ctx, command: str, user: discord.User = None):
     else:
         await ctx.send("> **[**ERROR**]**: Invalid input\n> __Command__: `autoreply ON|OFF [@user]`.", delete_after=5)
 
-@bot.command()
+@bot.command(aliases=['remote'])
 async def remoteuser(ctx, action: str, users: commands.Greedy[discord.User]):
     await ctx.message.delete()
     if action.upper() == "ADD":
