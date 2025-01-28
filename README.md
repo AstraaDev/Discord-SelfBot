@@ -111,25 +111,33 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 1. **Update `config/config.json`**: Enter your bot token and preferred prefix.
 ```json
 {
-    // Your Discord bot token, required to log in to the bot account
-    "token": "TOKEN-HERE",
-    // Prefix used to trigger bot commands (e.g., "*help")
-    "prefix": "PREFIX-HERE",
-    // List of user IDs that the bot will listen to for remote command execution
-    "remote-users": ["USER-ID-1", "USER-ID-2"],
-
-    // Auto-reply configuration for messages, channels, and specific users
-    "autoreply": {
-        // List of messages that the bot will use to auto-reply
-        "messages": [
-            "https://github.com/AstraaDev/Discord-SelfBot",
-            "https://discord.gg/PKR7nM9j9U"
-        ],
-        // Channels where the bot will enable auto-reply functionality
-        "channels": ["CHANNEL-ID-1", "CHANNEL-ID-2"],
-        // Users for whom the bot will reply automatically
-        "users": ["USER-ID-1", "USER-ID-2"]
-    }
+  // Your Discord bot token, required to log in to the bot account
+  "token": "TOKEN-HERE",
+  // Prefix used to trigger bot commands (e.g., "*help")
+  "prefix": "PREFIX-HERE",
+  // List of user IDs that the bot will listen to for remote command execution
+  "remote-users": ["USER-ID-1", "USER-ID-2"],
+  
+  // Auto-reply configuration for messages, channels, and specific users
+  "autoreply": {
+    // List of messages that the bot will use to auto-reply
+    "messages": [
+      "https://github.com/AstraaDev/Discord-SelfBot",
+      "https://discord.gg/PKR7nM9j9U"
+    ],
+    // Channels where the bot will enable auto-reply functionality
+    "channels": ["CHANNEL-ID-1", "CHANNEL-ID-2"],
+    // Users for whom the bot will reply automatically
+    "users": ["USER-ID-1", "USER-ID-2"]
+  },  
+  
+  // AFK (Away From Keyboard) mode configuration
+  "afk": {
+    // Whether AFK mode is enabled or disabled
+    "enabled": false,
+    // The message that the bot will send when AFK is enabled
+    "message": "I am currently AFK. I will respond as soon as possible!"
+  }
 }
 ```
 
