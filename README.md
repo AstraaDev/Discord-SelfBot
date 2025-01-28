@@ -53,6 +53,8 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 - quickdelete <message>
 - usericon <@user>
 - rolecolor <role>
+- tts <message>
+- qr <message>
 ```
 </details>
 
@@ -83,7 +85,6 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 
 ```
 - 9/11
-- cum
 - minesweeper <grid size>
 - 1337 <message>
 - dick <user>
