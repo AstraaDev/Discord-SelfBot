@@ -24,7 +24,40 @@ with open("config/config.json", "r") as file:
     prefix = config.get('prefix')
     message_generator = itertools.cycle(config["autoreply"]["messages"])
 
-start_time = datetime.datetime.utcnow() 
+def save_config(config):
+    with open("config/config.json", "w") as file:
+        json.dump(config, file, indent=4)
+
+def selfbot_menu(user, user_userid, users, guilds):
+    print(f"""\n\n{Fore.RESET}                            ██████╗ ████████╗██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
+                           ██╔═══██╗╚══██╔══╝██║██╔═══██╗    ╚══██╔══╝██╔═══██╗██╔═══██╗██║     
+                           ██║██╗██║   ██║   ██║██║   ██║       ██║   ██║   ██║██║   ██║██║     
+                           ██║██║██║   ██║   ██║██║   ██║       ██║   ██║   ██║██║   ██║██║     
+                           ╚█║████╔╝   ██║   ██║╚██████╔╝       ██║   ╚██████╔╝╚██████╔╝███████╗
+                            ╚╝╚═══╝    ╚═╝   ╚═╝ ╚═════╝        ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝\n""".replace('█', f'{b}█{y}'))
+    print(f"""{y}------------------------------------------------------------------------------------------------------------------------\n{w}raadev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://git\n{y}------------------------------------------------------------------------------------------------------------------------\n""")
+    print(f"""{y}[{b}+{y}]{w} SelfBot Information:\n
+\t{y}[{w}#{y}]{w} Version: v{__version__}
+\t{y}[{w}#{y}]{w} Logged in as: {user} ({user_userid})
+\t{y}[{w}#{y}]{w} Cached Users: {len(users)}
+\t{y}[{w}#{y}]{w} Guilds Connected: {len(guilds)}\n\n
+{y}[{b}+{y}]{w} Settings Overview:\n
+\t{y}[{w}#{y}]{w} SelfBot Prefix: {prefix}
+\t{y}[{w}#{y}]{w} Remote Users Configured:""")
+    if config["remote-users"]:
+        for i, user_id in enumerate(config["remote-users"], start=1):
+            print(f"\t\t{y}[{w}{i}{y}]{w} User ID: {user_id}")
+    else:
+        print(f"\t\t{y}[{w}-{y}]{w} No remote users configured.")
+    print(f"""
+\t{y}[{w}#{y}]{w} Active Autoreply Channels: {len(config["autoreply"]["channels"])}
+\t{y}[{w}#{y}]{w} Active Autoreply Users: {len(config["autoreply"]["users"])}\n
+\t{y}[{w}#{y}]{w} AFK Status: {'Enabled' if config["afk"]["enabled"] else 'Disabled'}
+\t{y}[{w}#{y}]{w} AFK Message: {config["afk"]["message"]}\n
+\t{y}[{w}#{y}]{w} Total Commands Loaded: 33\n\n
+{y}[{Fore.GREEN}!{y}]{w} SelfBot is now online and ready!""")
+
+start_time = datetime.datetime.utcnow()
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -32,37 +65,18 @@ class MyClient(discord.Client):
             ctypes.windll.kernel32.SetConsoleTitleW(f"SelfBot v{__version__} - Made By a5traa")
             os.system('cls')
         else:
-            print(f"SelfBot v{__version__} - Made By a5traa")
             os.system('clear')
-        print(f"""\n\n{Fore.RESET}                            ██████╗ ████████╗██╗ ██████╗     ████████╗ ██████╗  ██████╗ ██╗     
-                           ██╔═══██╗╚══██╔══╝██║██╔═══██╗    ╚══██╔══╝██╔═══██╗██╔═══██╗██║     
-                           ██║██╗██║   ██║   ██║██║   ██║       ██║   ██║   ██║██║   ██║██║     
-                           ██║██║██║   ██║   ██║██║   ██║       ██║   ██║   ██║██║   ██║██║     
-                           ╚█║████╔╝   ██║   ██║╚██████╔╝       ██║   ╚██████╔╝╚██████╔╝███████╗
-                            ╚╝╚═══╝    ╚═╝   ╚═╝ ╚═════╝        ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝\n""".replace('█', f'{b}█{y}'))
-        print(f"""{y}------------------------------------------------------------------------------------------------------------------------\n{w}raadev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://github.com/AstraaDev {b}|{w} https://git\n{y}------------------------------------------------------------------------------------------------------------------------\n""")
-        print(f"""{y}[{b}+{y}]{w} SelfBot Information:\n
-\t{y}[{w}#{y}]{w} Version: v{__version__}
-\t{y}[{w}#{y}]{w} Logged in as: {self.user} ({self.user.id})
-\t{y}[{w}#{y}]{w} Cached Users: {len(self.users)}
-\t{y}[{w}#{y}]{w} Guilds Connected: {len(self.guilds)}\n\n
-{y}[{b}+{y}]{w} Settings Overview:\n
-\t{y}[{w}#{y}]{w} SelfBot Prefix: {prefix}
-\t{y}[{w}#{y}]{w} Remote Users Configured:""")
-        if config["remote-users"]:
-            for i, user_id in enumerate(config["remote-users"], start=1):
-                print(f"\t\t{y}[{w}{i}{y}]{w} User ID: {user_id}")
-        else:
-            print(f"\t\t{y}[{w}-{y}]{w} No remote users configured.")
-        print(f"""
-\t{y}[{w}#{y}]{w} Active Autoreply Channels: {len(config["autoreply"]["channels"])}
-\t{y}[{w}#{y}]{w} Active Autoreply Users: {len(config["autoreply"]["users"])}\n
-\t{y}[{w}#{y}]{w} Total Commands Loaded: 31\n
-
-{y}[{Fore.GREEN}!{y}]{w} SelfBot is now online and ready!""")
+        selfbot_menu(self.user, self.user.id, self.users, self.guilds)
 
     async def on_message(self, message):
         if message.author != self.user and str(message.author.id) not in config["remote-users"]:
+            if config["afk"]["enabled"]:
+                if self.user in message.mentions:
+                    await message.reply(config["afk"]["message"])
+                    return
+                elif isinstance(message.channel, discord.DMChannel):
+                    await message.reply(config["afk"]["message"])
+                    return
             if str(message.author.id) in config["autoreply"]["users"]:
                 autoreply_message = next(message_generator)
                 await message.reply(autoreply_message)
@@ -70,6 +84,7 @@ class MyClient(discord.Client):
                 autoreply_message = next(message_generator)
                 await message.reply(autoreply_message)
             return
+        
 
         if message.content == f"{prefix}help":
             try:
@@ -93,7 +108,9 @@ class MyClient(discord.Client):
         > :handshake: `{prefix}help <category>`\n*Returns all commands of that category*
         > :electric_plug: `{prefix}ping`\n*Returns the bot's latency*
         > :hourglass: `{prefix}uptime`\n*Return how long the selfbot has been running*
-        > :repeat: `{prefix}autoreply <ON|OFF>`\n*Enable or disable automatic replies. When enabled, reply to every message in the channel, DM, or group with the next line from the `autoreply.txt` file, cycling through all lines*"""
+        > :repeat: `{prefix}autoreply <ON|OFF>`\n*Enable or disable automatic replies. When enabled, reply to every message in the channel, DM, or group with the next line from the `autoreply.txt` file, cycling through all lines*
+        > :zzz: `{prefix}afk ON|OFF`\n*Enable or disable AFK mode. When enabled, auto reply with a preset message to DMs or mentions.*
+        > :gear: `{prefix}remoteuser ADD|REMOVE @user(s)`\n*Add or remove one or more users to/from the list of remote users.*"""
             await message.channel.send(embed, file=discord.File("img/astraa.gif"))
         elif message.content == f"{prefix}help useful":
             try:
@@ -686,7 +703,7 @@ class MyClient(discord.Client):
                 pass
             args = message.content[len(f"{prefix}autoreply "):].strip().split()
             if len(args) < 1:
-                await message.channel.send("> **[ERROR]**: Invalid command. Use `autoreply ON|OFF [@user]`.", delete_after=5)
+                await message.channel.send("> **[**ERROR**]**: Invalid input\n> __Command__: `autoreply ON|OFF [@user]`.", delete_after=5)
                 return
             command = args[0].upper()
             user = None
@@ -697,34 +714,93 @@ class MyClient(discord.Client):
                 if user:
                     if str(user.id) not in config["autoreply"]["users"]:
                         config["autoreply"]["users"].append(str(user.id))
-                        with open("config/config.json", "w") as file:
-                            json.dump(config, file, indent=4)
+                        save_config(config)
+                        selfbot_menu(self.user, self.user.id, self.users, self.guilds)
                     await message.channel.send(f"> **Autoreply enabled for user {user.mention}.**", delete_after=5)
                 else:
                     if str(message.channel.id) not in config["autoreply"]["channels"]:
                         config["autoreply"]["channels"].append(str(message.channel.id))
-                        with open("config/config.json", "w") as file:
-                            json.dump(config, file, indent=4)
+                        save_config(config)
+                        selfbot_menu(self.user, self.user.id, self.users, self.guilds)
                     await message.channel.send("> **Autoreply has been enabled in this channel.**", delete_after=5)
             elif command == "OFF":
                 if user:
                     if str(user.id) in config["autoreply"]["users"]:
                         config["autoreply"]["users"].remove(str(user.id))
-                        with open("config/config.json", "w") as file:
-                            json.dump(config, file, indent=4)
+                        save_config(config)
+                        selfbot_menu(self.user, self.user.id, self.users, self.guilds)
                         await message.channel.send(f"> **Autoreply disabled for user {user.mention}.**", delete_after=5)
                     else:
-                        await message.channel.send(f"> **[ERROR]**: Autoreply was not enabled for user {user.mention}.**", delete_after=5)
+                        await message.channel.send(f"> **[**ERROR**]**: Autoreply was not enabled for user {user.mention}.**", delete_after=5)
                 else:
                     if str(message.channel.id) in config["autoreply"]["channels"]:
                         config["autoreply"]["channels"].remove(str(message.channel.id))
-                        with open("config/config.json", "w") as file:
-                            json.dump(config, file, indent=4)
+                        save_config(config)
+                        selfbot_menu(self.user, self.user.id, self.users, self.guilds)
                         await message.channel.send("> **Autoreply has been disabled in this channel.**", delete_after=5)
                     else:
-                        await message.channel.send("> **[ERROR]**: Autoreply was not enabled in this channel.**", delete_after=5)
+                        await message.channel.send("> **[**ERROR**]**: Autoreply was not enabled in this channel.**", delete_after=5)
             else:
-                await message.channel.send("> **[ERROR]**: Invalid command. Use `autoreply ON|OFF [@user]`.", delete_after=5)
+                await message.channel.send("> **[**ERROR**]**: Invalid input\n> __Command__: `autoreply ON|OFF [@user]`.", delete_after=5)
+        
+        elif message.content.startswith(f"{prefix}remoteuser"):
+            try:
+                await message.delete()
+            except:
+                pass
+            command = message.content[len(f"{prefix}remoteuser "):].strip().split(" ")[0].lower()
+            users = message.mentions
+            if not users:
+                await message.channel.send("> **[**ERROR**]**: No users mentioned\n> __Command__: `remoteuser ADD|REMOVE @user(s)`", delete_after=5)
+                return
+            if command == "add":
+                for user in users:
+                    if str(user.id) not in config["remote-users"]:
+                        config["remote-users"].append(str(user.id))
+                save_config(config)
+                selfbot_menu(self.user, self.user.id, self.users, self.guilds)
+                await message.channel.send(f"> **Success**: {len(users)} user(s) added to remote-users.", delete_after=5)
+            elif command == "remove":
+                for user in users:
+                    if str(user.id) in config["remote-users"]:
+                        config["remote-users"].remove(str(user.id))
+                save_config(config)
+                selfbot_menu(self.user, self.user.id, self.users, self.guilds)
+                await message.channel.send(f"> **Success**: {len(users)} user(s) removed from remote-users.", delete_after=5)
+            else:
+                await message.channel.send(f"> **[**ERROR**]**: Invalid command. Use `ADD` or `REMOVE`.\n> __Command__: `remoteuser ADD|REMOVE @user(s)`", delete_after=5)
+
+        
+        elif message.content.startswith(f"{prefix}afk"):
+            try:
+                await message.delete()
+            except:
+                pass
+            args = message.content[len(f"{prefix}afk "):].strip().split(maxsplit=1)
+            if len(args) < 1:
+                await message.channel.send("> **[**ERROR**]**: Invalid command.\n> __Command__: `afk ON|OFF`.", delete_after=5)
+                return
+            command = args[0].upper()
+            if command == "ON":
+                if not config["afk"]["enabled"]:
+                    config["afk"]["enabled"] = True
+                    if len(args) > 1:
+                        config["afk"]["message"] = args[1]
+                    save_config(config)
+                    selfbot_menu(self.user, self.user.id, self.users, self.guilds)
+                    await message.channel.send(f"> **AFK mode enabled.** Message: `{config['afk']['message']}`", delete_after=5)
+                else:
+                    await message.channel.send("> **[**ERROR**]**: AFK mode is already enabled.", delete_after=5)
+            elif command == "OFF":
+                if config["afk"]["enabled"]:
+                    config["afk"]["enabled"] = False
+                    save_config(config)
+                    selfbot_menu(self.user, self.user.id, self.users, self.guilds)
+                    await message.channel.send("> **AFK mode disabled.** Welcome back!", delete_after=5)
+                else:
+                    await message.channel.send("> **[**ERROR**]**: AFK mode is not currently enabled.", delete_after=5)
+            else:
+                await message.channel.send("> **[**ERROR**]**: Invalid command.\n> __Command__: `afk ON|OFF`.", delete_after=5)
 
 
 client = MyClient()
