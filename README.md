@@ -37,6 +37,8 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 - ping
 - uptime
 - autoreply ON|OFF [@user]
+- remoteuser ADD|REMOVE @user(s)
+- afk ON|OFF
 ```
 </details>
 
@@ -144,11 +146,14 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 
 ## Command Execution via Remote User
 
-This SelfBot supports executing commands remotely if you are listed in the `remote-users` array in `config/config.json`. 
+This SelfBot supports executing commands remotely if you are listed in the `remote-users` array in `config/config.json`. You can manage the list of remote users using the `remoteuser` command.
 
 ### Example
-1. Add your Discord user ID to `remote-users` in the configuration file.
+1. Add your Discord user ID to `remote-users` in the configuration file, or use the `*remoteuser ADD @user(s)` command to add users to the list.
 2. From another account, type `*help` (assuming `*` is the prefix). If you are in the list, you can execute commands.
+3. You can also remove users from the list with `*remoteuser REMOVE @user(s)`.
+
+This allows for greater flexibility in managing who can control the bot remotely.
 
 ---
 

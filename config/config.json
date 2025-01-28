@@ -2,7 +2,6 @@
     "token": "YOUR_DISCORD_TOKEN_HERE",
     "prefix": "*",
     "remote-users": [],
-    
     "autoreply": {
         "messages": [
             "https://github.com/AstraaDev/Discord-SelfBot",
@@ -10,5 +9,9 @@
         ],
         "channels": [],
         "users": []
+    },
+    "afk": {
+        "enabled": false,
+        "message": "I am currently AFK. I will respond as soon as possible!"
     }
 }
