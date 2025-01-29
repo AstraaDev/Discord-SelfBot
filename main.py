@@ -92,9 +92,6 @@ async def on_message(message):
         else:
             await message.reply(message.content)
 
-    if message.author != bot.user and str(message.author.id) not in config["remote-users"]:
-        return
-
     if config["afk"]["enabled"]:
         if bot.user in message.mentions:
             await message.reply(config["afk"]["message"])
@@ -107,13 +104,18 @@ async def on_message(message):
         if str(message.author.id) in config["autoreply"]["users"]:
             autoreply_message = next(message_generator)
             await message.reply(autoreply_message)
+            return
         elif str(message.channel.id) in config["autoreply"]["channels"]:
             autoreply_message = next(message_generator)
             await message.reply(autoreply_message)
+            return
     
     if message.guild and message.guild.id == 1279905004181917808 and message.content.startswith(config['prefix']):
         await message.delete()
         await message.channel.send("> SelfBot commands are not allowed here. Thanks.", delete_after=5)
+        return
+
+    if message.author != bot.user and str(message.author.id) not in config["remote-users"]:
         return
 
     await bot.process_commands(message)
@@ -136,7 +138,7 @@ async def help(ctx):
 > :x: `{prefix}shutdown` - Stop the selfbot.  
 > :notepad_spiral: `{prefix}uptime` - Returns how long the selfbot has been running.
 > :closed_lock_with_key: `{prefix}remoteuser <@user>` - Authorize a user to execute commands remotely.
-> :robot: `{prefix}copycat START|STOP <@user>` - Automatically reply with the same message whenever the mentioned user speaks. 
+> :robot: `{prefix}copycat ON|OFF <@user>` - Automatically reply with the same message whenever the mentioned user speaks. 
 > :pushpin: `{prefix}ping` - Returns the bot's latency.
 > :pushpin: `{prefix}pingweb <url>` - Ping a website and return the HTTP status code (e.g., 200 if online).
 > :gear: `{prefix}geoip <ip>` - Looks up the IP's location.
@@ -768,15 +770,15 @@ async def sendall(ctx, *, message=None):
 async def copycat(ctx, action: str, user: discord.User=None):
     await ctx.message.delete()
     
-    if action not in ["START", "STOP"]:
-        await ctx.send(f"> **[**ERROR**]**: Invalid action. Use `START` or `STOP`.\n> __Command__: `copycat START|STOP <@user>`", delete_after=5)
+    if action not in ["ON", "OFF"]:
+        await ctx.send(f"> **[**ERROR**]**: Invalid action. Use `ON` or `OFF`.\n> __Command__: `copycat ON|OFF <@user>`", delete_after=5)
         return
     
     if user is None:
-        await ctx.send(f"> **[**ERROR**]**: Please specify a user to copy.\n> __Command__: `copycat START|STOP <@user>`", delete_after=5)
+        await ctx.send(f"> **[**ERROR**]**: Please specify a user to copy.\n> __Command__: `copycat ON|OFF <@user>`", delete_after=5)
         return
     
-    if action == "START":
+    if action == "ON":
         if user.id not in config['copycat']['users']:
             config['copycat']['users'].append(user.id)
             save_config(config)
@@ -784,7 +786,7 @@ async def copycat(ctx, action: str, user: discord.User=None):
         else:
             await ctx.send(f"> `{str(user)}` is already being copied.", delete_after=5)
     
-    elif action == "STOP":
+    elif action == "OFF":
         if user.id in config['copycat']['users']:
             config['copycat']['users'].remove(user.id)
             save_config(config)
