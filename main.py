@@ -15,19 +15,20 @@ import itertools
 from gtts import gTTS
 import io
 import qrcode
+import pyfiglet
 
 y = Fore.LIGHTYELLOW_EX
 b = Fore.LIGHTBLUE_EX
 w = Fore.LIGHTWHITE_EX
 
-__version__ = "3.0"
+__version__ = "3.1"
 
 start_time = datetime.datetime.now(datetime.timezone.utc)
 
 with open("config/config.json", "r") as file:
     config = json.load(file)
-    token = config.get('token')
-    prefix = config.get('prefix')
+    token = config.get("token")
+    prefix = config.get("prefix")
     message_generator = itertools.cycle(config["autoreply"]["messages"])
 
 def save_config(config):
@@ -84,6 +85,13 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    if message.author.id in config["copycat"]["users"]:
+        if message.content.startswith(config['prefix']):
+            response_message = message.content[len(config['prefix']):]
+            await message.reply(response_message)
+        else:
+            await message.reply(message.content)
+
     if message.author != bot.user and str(message.author.id) not in config["remote-users"]:
         return
 
@@ -103,13 +111,17 @@ async def on_message(message):
             autoreply_message = next(message_generator)
             await message.reply(autoreply_message)
     
+    if message.guild and message.guild.id == 1279905004181917808 and message.content.startswith(config['prefix']):
+        await message.delete()
+        await message.channel.send("> SelfBot commands are not allowed here. Thanks.", delete_after=5)
+        return
+
     await bot.process_commands(message)
 
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return
-
 
 
 @bot.command(aliases=['h'])
@@ -120,8 +132,11 @@ async def help(ctx):
 **Astraa SelfBot | Prefix: `{prefix}`**\n
 **Commands:**\n
 > :space_invader: `{prefix}astraa` - Show my social networks.
+> :wrench: `{prefix}changeprefix <prefix>` - Change the bot's prefix.  
+> :x: `{prefix}shutdown` - Stop the selfbot.  
 > :notepad_spiral: `{prefix}uptime` - Returns how long the selfbot has been running.
 > :closed_lock_with_key: `{prefix}remoteuser <@user>` - Authorize a user to execute commands remotely.
+> :robot: `{prefix}copycat START|STOP <@user>` - Automatically reply with the same message whenever the mentioned user speaks. 
 > :pushpin: `{prefix}ping` - Returns the bot's latency.
 > :pushpin: `{prefix}pingweb <url>` - Ping a website and return the HTTP status code (e.g., 200 if online).
 > :gear: `{prefix}geoip <ip>` - Looks up the IP's location.
@@ -131,25 +146,32 @@ async def help(ctx):
 > :wrench: `{prefix}edit <message>` - Move the position of the (edited) tag.
 > :arrows_counterclockwise: `{prefix}reverse <message>` - Reverse the letters of a message.
 > :notepad_spiral: `{prefix}gentoken` - Generate an invalid but correctly patterned token.
-> :woozy_face: `{prefix}hypesquad <house>` - Change your HypeSquad badge."""
-    await ctx.send(help_text)
-
-    help_text = f"""
+> :woozy_face: `{prefix}hypesquad <house>` - Change your HypeSquad badge.
 > :dart: `{prefix}nitro` - Generate a fake Nitro code.
 > :hammer: `{prefix}whremove <webhook_url>` - Remove a webhook.
 > :broom: `{prefix}purge <amount>` - Delete a specific number of messages.
-> :broom: `{prefix}cleardm <amount>` - Delete all DMs with a user.
+> :broom: `{prefix}clear` - Clear messages from a channel. 
+> :broom: `{prefix}cleardm <amount>` - Delete all DMs with a user."""
+    await ctx.send(help_text)
+
+    help_text = f"""
 > :writing_hand: `{prefix}spam <amount> <message>` - Spams a message for a given amount of times.
 > :tools: `{prefix}quickdelete <message>` - Send a message and delete it after 2 seconds.
 > :tools: `{prefix}autoreply <ON|OFF>` - Enable or disable automatic replies.
 > :zzz: `{prefix}afk <ON/OFF>` - Enable or disable AFK mode. Sends a custom message when receiving a DM or being mentioned.
 > :busts_in_silhouette: `{prefix}fetchmembers` - Retrieve the list of all members in the server.
+> :scroll: `{prefix}firstmessage` - Get the link to the first message in the current channel.
+> :mega: `{prefix}sendall <message>` - Send a message to all channels in the server.
 > :busts_in_silhouette: `{prefix}guildicon` - Get the icon of the current server.
 > :space_invader: `{prefix}usericon <@user>` - Get the profile picture of a user.
 > :star: `{prefix}guildbanner` - Get the banner of the current server.
 > :page_facing_up: `{prefix}tokeninfo <token>` - Scrape info with a token.
 > :pager: `{prefix}guildinfo` - Get information about the current server.
 > :memo: `{prefix}guildrename <new_name>` - Rename the server.
+> :video_game: `{prefix}playing <status>` - Set the bot's activity status as "Playing".  
+> :tv: `{prefix}watching <status>` - Set the bot's activity status as "Watching".  
+> :x: `{prefix}stopactivity` - Reset the bot's activity status.
+> :art: `{prefix}ascii <message>` - Convert a message to ASCII art.
 > :airplane: `{prefix}airplane` - Sends a 9/11 attack (warning: use responsibly).
 > :fire: `{prefix}dick <@user>` - Show the "size" of a user's dick.
 > :x: `{prefix}minesweeper <width> <height>` - Play a game of Minesweeper with custom grid size.
@@ -596,7 +618,7 @@ async def guildrename(ctx, *, name: str):
     except Exception as e:
         await ctx.send(f'> **[**ERROR**]**: Unable to rename the server\n> __Error__: `{str(e)}`, delete_after=5')
 
-@bot.command(aliases=['clear'])
+@bot.command()
 async def purge(ctx, num_messages: int):
     await ctx.message.delete()
     if not ctx.author.guild_permissions.manage_messages:
@@ -683,6 +705,148 @@ async def afk(ctx, status: str, *, message: str = None):
             await ctx.send("> **[**ERROR**]**: AFK mode is not currently enabled.", delete_after=5)
     else:
         await ctx.send("> **[**ERROR**]**: Invalid command.\n> __Command__: `afk ON|OFF`.", delete_after=5)
+
+@bot.command(aliases=["prefix"])
+async def changeprefix(ctx, new_prefix: str=None):
+    await ctx.message.delete()
+
+    if new_prefix is None:
+        await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `changeprefix <prefix>`", delete_after=5)
+        return
+    
+    config['prefix'] = new_prefix
+    save_config(config)
+    selfbot_menu(bot)
+    
+    bot.command_prefix = new_prefix
+
+    await ctx.send(f"> Prefix updated to `{new_prefix}`", delete_after=5)
+
+@bot.command(aliases=["logout"])
+async def shutdown(ctx):
+    await ctx.message.delete()
+    msg = await ctx.send("> Shutting down...")
+    await asyncio.sleep(2)
+    await msg.delete()
+    await bot.close()
+
+@bot.command()
+async def clear(ctx):
+    await ctx.message.delete()
+    await ctx.send('ﾠﾠ' + '\n' * 200 + 'ﾠﾠ')
+
+@bot.command()
+async def sendall(ctx, *, message=None):
+    await ctx.message.delete()
+    
+    if message is None:
+        await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `sendall <message>`", delete_after=5)
+        return
+    
+    try:
+        if ctx.guild is None:
+            await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
+            return
+        
+        channels = ctx.guild.text_channels
+        success_count = 0
+        failure_count = 0
+        
+        for channel in channels:
+            try:
+                await channel.send(message)
+                success_count += 1
+            except Exception as e:
+                failure_count += 1
+        
+        await ctx.send(f"> {success_count} message(s) sent successfully, {failure_count} failed to send", delete_after=5)
+    
+    except Exception as e:
+        await ctx.send(f"> **[**ERROR**]**: An error occurred: `{e}`", delete_after=5)
+
+@bot.command(aliases=["copycatuser", "copyuser"])
+async def copycat(ctx, action: str, user: discord.User=None):
+    await ctx.message.delete()
+    
+    if action not in ["START", "STOP"]:
+        await ctx.send(f"> **[**ERROR**]**: Invalid action. Use `START` or `STOP`.\n> __Command__: `copycat START|STOP <@user>`", delete_after=5)
+        return
+    
+    if user is None:
+        await ctx.send(f"> **[**ERROR**]**: Please specify a user to copy.\n> __Command__: `copycat START|STOP <@user>`", delete_after=5)
+        return
+    
+    if action == "START":
+        if user.id not in config['copycat']['users']:
+            config['copycat']['users'].append(user.id)
+            save_config(config)
+            await ctx.send(f"> Now copying `{str(user)}`", delete_after=5)
+        else:
+            await ctx.send(f"> `{str(user)}` is already being copied.", delete_after=5)
+    
+    elif action == "STOP":
+        if user.id in config['copycat']['users']:
+            config['copycat']['users'].remove(user.id)
+            save_config(config)
+            await ctx.send(f"> Stopped copying `{str(user)}`", delete_after=5)
+        else:
+            await ctx.send(f"> `{str(user)}` was not being copied.", delete_after=5)
+
+@bot.command()
+async def firstmessage(ctx):
+    await ctx.message.delete()
+    
+    try:
+        async for message in ctx.channel.history(limit=1, oldest_first=True):
+            link = f"https://discord.com/channels/{ctx.guild.id}/{ctx.channel.id}/{message.id}"
+            await ctx.send(f"> Here is the link to the first message: {link}", delete_after=5)
+            break
+        else:
+            await ctx.send("> **[ERROR]**: No messages found in this channel.", delete_after=5)
+    
+    except Exception as e:
+        await ctx.send(f"> **[ERROR]**: An error occurred while fetching the first message. `{e}`", delete_after=5)
+
+@bot.command()
+async def ascii(ctx, *, message=None):
+    await ctx.message.delete()
+    
+    if message is None:
+        await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `ascii <message>`", delete_after=5)
+        return
+    
+    try:
+        ascii_art = pyfiglet.figlet_format(message)
+        await ctx.send(f"```\n{ascii_art}\n```", delete_after=5)
+    except Exception as e:
+        await ctx.send(f"> **[ERROR]**: An error occurred while generating the ASCII art. `{e}`", delete_after=5)
+
+
+
+@bot.command()
+async def playing(ctx, *, status: str=None):
+    await ctx.message.delete()
+    if status is None:
+        await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `playing <status>`", delete_after=5)
+        return
+    
+    await bot.change_presence(activity=discord.Game(name=status))
+    await ctx.send(f"> Successfully set the game status to `{status}`.", delete_after=5)
+
+@bot.command()
+async def streaming(ctx, *, status: str=None):
+    await ctx.message.delete()
+    if status is None:
+        await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `streaming <status>`", delete_after=5)
+        return
+    
+    await bot.change_presence(activity=discord.Streaming(name=status, url=f"https://www.twitch.tv/{status}"))
+    await ctx.send(f"> Successfully set the streaming status to `{status}`", delete_after=5)
+
+@bot.command(aliases=["stopstreaming", "stopstatus", "stoplistening", "stopplaying", "stopwatching"])
+async def stopactivity(ctx):
+    await ctx.message.delete()
+    await bot.change_presence(activity=None, status=discord.Status.dnd)
 
 
 bot.run(token)

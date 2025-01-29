@@ -1,6 +1,6 @@
 {
     "token": "YOUR_DISCORD_TOKEN_HERE",
-    "prefix": "*",
+    "prefix": ".",
     "remote-users": [],
     "autoreply": {
         "messages": [
@@ -13,5 +13,8 @@
     "afk": {
         "enabled": false,
         "message": "I am currently AFK. I will respond as soon as possible!"
+    },
+    "copycat": {
+        "users": []
     }
 }
