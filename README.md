@@ -37,7 +37,7 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 `shutdown` - Stop the selfbot.  
 `*uptime` - Returns how long the selfbot has been running.  
 `*remoteuser <@user>` - Authorize a user to execute commands remotely.  
-`copycat START|STOP <@user>` - Automatically reply with the same message whenever the mentioned user speaks.  
+`copycat ON|OFF <@user>` - Automatically reply with the same message whenever the mentioned user speaks.  
 `*ping` - Returns the bot's latency.  
 `*pingweb <url>` - Ping a website and return the HTTP status code (e.g., 200 if online).  
 `*geoip <ip>` - Looks up the IP's location.  
