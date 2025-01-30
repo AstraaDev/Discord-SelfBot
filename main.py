@@ -21,7 +21,7 @@ y = Fore.LIGHTYELLOW_EX
 b = Fore.LIGHTBLUE_EX
 w = Fore.LIGHTWHITE_EX
 
-__version__ = "3.1"
+__version__ = "3.2"
 
 start_time = datetime.datetime.now(datetime.timezone.utc)
 
@@ -68,7 +68,7 @@ def selfbot_menu(bot):
 \t{y}[{w}#{y}]{w} Active Autoreply Users: {len(config["autoreply"]["users"])}\n
 \t{y}[{w}#{y}]{w} AFK Status: {'Enabled' if config["afk"]["enabled"] else 'Disabled'}
 \t{y}[{w}#{y}]{w} AFK Message: "{config["afk"]["message"]}"\n
-\t{y}[{w}#{y}]{w} Total Commands Loaded: 33\n\n
+\t{y}[{w}#{y}]{w} Total Commands Loaded: 43\n\n
 {y}[{Fore.GREEN}!{y}]{w} SelfBot is now online and ready!""")
 
 
@@ -163,6 +163,7 @@ async def help(ctx):
 > :zzz: `{prefix}afk <ON/OFF>` - Enable or disable AFK mode. Sends a custom message when receiving a DM or being mentioned.
 > :busts_in_silhouette: `{prefix}fetchmembers` - Retrieve the list of all members in the server.
 > :scroll: `{prefix}firstmessage` - Get the link to the first message in the current channel.
+> :mega: `{prefix}dmall <message>` - Send a message to all members in the server.
 > :mega: `{prefix}sendall <message>` - Send a message to all channels in the server.
 > :busts_in_silhouette: `{prefix}guildicon` - Get the icon of the current server.
 > :space_invader: `{prefix}usericon <@user>` - Get the profile picture of a user.
@@ -183,37 +184,50 @@ async def help(ctx):
 @bot.command()
 async def uptime(ctx):
     await ctx.message.delete()
+
     now = datetime.datetime.now(datetime.timezone.utc)
     delta = now - start_time
     hours, remainder = divmod(int(delta.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
     days, hours = divmod(hours, 24)
+
     if days:
         time_format = "**{d}** days, **{h}** hours, **{m}** minutes, and **{s}** seconds."
     else:
         time_format = "**{h}** hours, **{m}** minutes, and **{s}** seconds."
+
     uptime_stamp = time_format.format(d=days, h=hours, m=minutes, s=seconds)
+
     await ctx.send(uptime_stamp)
 
 @bot.command()
 async def ping(ctx):
     await ctx.message.delete()
+
     before = time.monotonic()
     message_to_send = await ctx.send("Pinging...")
+
     await message_to_send.edit(content=f"`{int((time.monotonic() - before) * 1000)} ms`")
 
 @bot.command(aliases=['astra'])
 async def astraa(ctx):
     await ctx.message.delete()
+
     embed = f"""**MY SOCIAL NETWORKS | Prefix: `{prefix}`**\n
     > :pager: `Discord Server`\n*https://discord.gg/PKR7nM9j9U*
     > :computer: `GitHub Page`\n*https://github.com/AstraaDev*
     > :robot: `SelfBot Project`\n*https://github.com/AstraaDev/Discord-SelfBot*"""
-    await ctx.send(embed, file=discord.File("img/astraa.gif"))
+
+    await ctx.send(embed)
 
 @bot.command()
-async def geoip(ctx, ip: str):
+async def geoip(ctx, ip: str=None):
     await ctx.message.delete()
+
+    if not ip:
+        await ctx.send("> **[ERROR]**: Invalid command.\n> __Command__: `geoip <ip>`", delete_after=5)
+        return
+
     try:
         r = requests.get(f'http://ip-api.com/json/{ip}')
         geo = r.json()
@@ -231,10 +245,11 @@ async def geoip(ctx, ip: str):
         await ctx.send(f'> **[**ERROR**]**: Unable to geolocate ip\n> __Error__: `{str(e)}`', delete_after=5)
 
 @bot.command()
-async def tts(ctx, *, content: str = None):
+async def tts(ctx, content: str=None):
     await ctx.message.delete()
+
     if not content:
-        await ctx.send('> **[**ERROR**]**: Invalid input\n> __Command__: `tts <message>`')
+        await ctx.send("> **[ERROR]**: Invalid command.\n> __Command__: `tts <message>`", delete_after=5)
         return
 
     content = content.strip()
@@ -248,7 +263,7 @@ async def tts(ctx, *, content: str = None):
     await ctx.send(file=discord.File(f, f"{content[:10]}.wav"))
 
 @bot.command(aliases=['qrcode'])
-async def qr(ctx, *, text: str):
+async def qr(ctx, text: str="https://discord.gg/PKR7nM9j9U"):
     qr = qrcode.make(text)
     
     img_byte_arr = io.BytesIO()
@@ -258,8 +273,13 @@ async def qr(ctx, *, text: str):
     await ctx.send(file=discord.File(img_byte_arr, "qr_code.png"))
 
 @bot.command()
-async def pingweb(ctx, website_url: str):
+async def pingweb(ctx, website_url: str=None):
     await ctx.message.delete()
+
+    if not website_url:
+        await ctx.send("> **[ERROR]**: Invalid command.\n> __Command__: `pingweb <url>`", delete_after=5)
+        return
+
     try:
         r = requests.get(website_url).status_code
         if r == 404:
@@ -270,34 +290,42 @@ async def pingweb(ctx, website_url: str):
         await ctx.send(f'> **[**ERROR**]**: Unable to ping website\n> __Error__: `{str(e)}`', delete_after=5)
 
 @bot.command()
-async def gentoken(ctx, user: str = None):
+async def gentoken(ctx, user: str=None):
     await ctx.message.delete()
+
     code = "ODA"+random.choice(string.ascii_letters)+''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))+"."+random.choice(string.ascii_letters).upper()+''.join(random.choice(string.ascii_letters + string.digits) for _ in range(5))+"."+''.join(random.choice(string.ascii_letters + string.digits) for _ in range(27))
+    
     if not user:
         await ctx.send(''.join(code))
     else:
         await ctx.send(f"> {user}'s token is: ||{''.join(code)}||")
 
 @bot.command()
-async def quickdelete(ctx, message_content: str):
+async def quickdelete(ctx, message: str=None):
     await ctx.message.delete()
-    if not message_content:
+
+    if not message:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `quickdelete <message>`', delete_after=2)
         return
-    await ctx.send(message_content, delete_after=2)
+    
+    await ctx.send(message, delete_after=2)
 
 @bot.command(aliases=['uicon'])
 async def usericon(ctx, user: discord.User = None):
     await ctx.message.delete()
+
     if not user:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `usericon <@user>`', delete_after=5)
         return
+    
     avatar_url = user.avatar.url if user.avatar else user.default_avatar.url
+
     await ctx.send(f"> {user.mention}'s avatar:\n{avatar_url}")
 
 @bot.command(aliases=['tinfo'])
-async def tokeninfo(ctx, *, usertoken: str = None):
+async def tokeninfo(ctx, *, usertoken: str=None):
     await ctx.message.delete()
+
     if not usertoken:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `tokeninfo <token>`', delete_after=5)
         return
@@ -385,11 +413,8 @@ async def tokeninfo(ctx, *, usertoken: str = None):
         await ctx.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: Invalid token', delete_after=5)
 
 @bot.command()
-async def cleardm(ctx, *, amount: str = None):
+async def cleardm(ctx, *, amount: str="1"):
     await ctx.message.delete()
-    if not amount:
-        await ctx.send(f'> **[**ERROR**]**: Please specify the number of messages to delete.\n> __Command__: `{config["prefix"]}cleardm <amount>`', delete_after=5)
-        return
 
     if not amount.isdigit():
         await ctx.send(f'> **[**ERROR**]**: Invalid amount specified. It must be a number.\n> __Command__: `{config["prefix"]}cleardm <amount>`', delete_after=5)
@@ -422,8 +447,9 @@ async def cleardm(ctx, *, amount: str = None):
 
 
 @bot.command(aliases=['hs'])
-async def hypesquad(ctx, *, house: str = None):
+async def hypesquad(ctx, house: str=None):
     await ctx.message.delete()
+
     if not house:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `hypesquad <house>`', delete_after=5)
         return
@@ -452,58 +478,78 @@ async def hypesquad(ctx, *, house: str = None):
     try:
         r = requests.post('https://discordapp.com/api/v6/hypesquad/online', headers=headers, json=payload, timeout=10)
         r.raise_for_status()
+
         if r.status_code == 204:
             await ctx.send(f'> Hypesquad House changed to `{house}`!')
+
     except requests.exceptions.RequestException as e:
         await ctx.send(f'> **[**ERROR**]**: Unable to change Hypesquad house\n> __Error__: `{str(e)}`', delete_after=5)
 
 @bot.command(aliases=['ginfo'])
 async def guildinfo(ctx):
     await ctx.message.delete()
+
+    if not ctx.guild:
+        await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
+        return
+
     date_format = "%a, %d %b %Y %I:%M %p"
-    embed = discord.Embed(title=f"> **GUILD INFORMATIONS | Prefix: `{prefix}`**", color=discord.Color.blue())
-    embed.add_field(name=":dividers: __Basic Information__", 
-                    value=f"Server Name: `{ctx.guild.name}`\nServer ID: `{ctx.guild.id}`\nCreation Date: `{ctx.guild.created_at.strftime(date_format)}`\nServer Icon: `{ctx.guild.icon.url if ctx.guild.icon.url else 'None'}`\nServer Owner: `{ctx.guild.owner}`", 
-                    inline=False)
-    embed.add_field(name=":page_facing_up: __Other Information__", 
-                    value=f"`{len(ctx.guild.members)}` Members\n`{len(ctx.guild.roles)}` Roles\n`{len(ctx.guild.text_channels) if ctx.guild.text_channels else 'None'}` Text-Channels\n`{len(ctx.guild.voice_channels) if ctx.guild.voice_channels else 'None'}` Voice-Channels\n`{len(ctx.guild.categories) if ctx.guild.categories else 'None'}` Categories", 
-                    inline=False)
-    await ctx.send(embed, file=discord.File("img/astraa.gif"))
+    embed = f"""> **GUILD INFORMATIONS | Prefix: `{prefix}`**
+:dividers: __Basic Information__
+Server Name: `{ctx.guild.name}`\nServer ID: `{ctx.guild.id}`\nCreation Date: `{ctx.guild.created_at.strftime(date_format)}`\nServer Icon: `{ctx.guild.icon.url if ctx.guild.icon.url else 'None'}`\nServer Owner: `{ctx.guild.owner}`
+:page_facing_up: __Other Information__
+`{len(ctx.guild.members)}` Members\n`{len(ctx.guild.roles)}` Roles\n`{len(ctx.guild.text_channels) if ctx.guild.text_channels else 'None'}` Text-Channels\n`{len(ctx.guild.voice_channels) if ctx.guild.voice_channels else 'None'}` Voice-Channels\n`{len(ctx.guild.categories) if ctx.guild.categories else 'None'}` Categories"""
+    
+    await ctx.send(embed)
 
 @bot.command()
 async def nitro(ctx):
     await ctx.message.delete()
-    await ctx.send(f"> https://discord.gift/{''.join(random.choices(string.ascii_letters + string.digits, k=16))}")
+
+    await ctx.send(f"https://discord.gift/{''.join(random.choices(string.ascii_letters + string.digits, k=16))}")
 
 @bot.command()
-async def whremove(ctx, webhook: str):
+async def whremove(ctx, webhook: str=None):
     await ctx.message.delete()
+
     if not webhook:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}whremove <webhook>`', delete_after=5)
         return
-    requests.delete(webhook.rstrip())
+    
+    try:
+        requests.delete(webhook.rstrip())
+    except Exception as e:
+        await ctx.send(f'> **[**ERROR**]**: Unable to delete webhook\n> __Error__: `{str(e)}`', delete_after=5)
+        return
+    
     await ctx.send(f'> Webhook has been deleted!')
 
 @bot.command(aliases=['hide'])
-async def hidemention(ctx, *, content: str):
+async def hidemention(ctx, content: str=None):
     await ctx.message.delete()
+
     if not content:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}hidemention <message>`', delete_after=5)
         return
+    
     await ctx.send(content + ('||\u200b||' * 200) + '@everyone')
 
 @bot.command()
-async def edit(ctx, *, content: str):
+async def edit(ctx, content: str=None):
     await ctx.message.delete()
+    
     if not content:
         await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `{prefix}edit <message>`', delete_after=5)
         return
+    
     text = await ctx.send(content)
+
     await text.edit(content=f"\u202b{content}")
 
 @bot.command(aliases=['911'])
 async def airplane(ctx):
     await ctx.message.delete()
+
     frames = [
         f''':man_wearing_turban::airplane:\t\t\t\t:office:''',
         f''':man_wearing_turban:\t:airplane:\t\t\t:office:''',
@@ -511,14 +557,17 @@ async def airplane(ctx):
         f''':man_wearing_turban:\t\t\t:airplane:\t:office:''',
         f''':man_wearing_turban:\t\t\t\t:airplane::office:''',
         ''':boom::boom::boom:''']
+    
     sent_message = await ctx.send(frames[0])
+
     for frame in frames[1:]:
         await asyncio.sleep(0.5)
         await sent_message.edit(content=frame)
 
 @bot.command(aliases=['mine'])
-async def minesweeper(ctx, size: int = 5):
+async def minesweeper(ctx, size: int=5):
     await ctx.message.delete()
+
     size = max(min(size, 8), 2)
     bombs = [[random.randint(0, size - 1), random.randint(0, size - 1)] for _ in range(size - 1)]
     is_on_board = lambda x, y: 0 <= x < size and 0 <= y < size
@@ -526,6 +575,7 @@ async def minesweeper(ctx, size: int = 5):
     m_numbers = [":one:", ":two:", ":three:", ":four:", ":five:", ":six:"]
     m_offsets = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
     message_to_send = "**Click to play**:\n"
+
     for y in range(size):
         for x in range(size):
             tile = "||{}||".format(chr(11036))
@@ -540,37 +590,54 @@ async def minesweeper(ctx, size: int = 5):
                     tile = "||{}||".format(m_numbers[count - 1])
             message_to_send += tile
         message_to_send += "\n"
+
     await ctx.send(message_to_send)
 
 @bot.command(aliases=['leet'])
-async def leetspeak(ctx, *, content: str):
+async def leetspeak(ctx, content: str):
     await ctx.message.delete()
+
+    if not content:
+        await ctx.send("> **[ERROR]**: Invalid command.\n> __Command__: `leetspeak <message>`", delete_after=5)
+        return
+
     content = content.replace('a', '4').replace('A', '4').replace('e', '3').replace('E', '3').replace('i', '1').replace('I', '1').replace('o', '0').replace('O', '0').replace('t', '7').replace('T', '7').replace('b', '8').replace('B', '8')
     await ctx.send(content)
 
 @bot.command()
-async def dick(ctx, user: str = None):
+async def dick(ctx, user: str=None):
     await ctx.message.delete()
+
     if not user:
         user = ctx.author.display_name
+
     size = random.randint(1, 15)
     dong = "=" * size
+
     await ctx.send(f"> **{user}**'s Dick size\n8{dong}D")
 
 @bot.command()
-async def reverse(ctx, *, content: str):
+async def reverse(ctx, content: str=None):
     await ctx.message.delete()
+
+    if not content:
+        await ctx.send("> **[ERROR]**: Invalid command.\n> __Command__: `reverse <message>`", delete_after=5)
+        return
+
     content = content[::-1]
     await ctx.send(content)
 
 @bot.command(aliases=['fetch'])
 async def fetchmembers(ctx):
     await ctx.message.delete()
+
     if not ctx.guild:
         await ctx.send(f'> **[**ERROR**]**: This command can only be used in a server.', delete_after=5)
         return
+    
     members = ctx.guild.members
     member_data = []
+
     for member in members:
         member_info = {
             "name": member.name,
@@ -581,14 +648,18 @@ async def fetchmembers(ctx):
             "joined_at": str(member.joined_at)
         }
         member_data.append(member_info)
+
     with open("members_list.json", "w", encoding="utf-8") as f:
         json.dump(member_data, f, indent=4)
+
     await ctx.send("> List of members:", file=discord.File("members_list.json"))
+
     os.remove("members_list.json")
 
 @bot.command()
-async def spam(ctx, amount: int, *, message_to_send: str):
+async def spam(ctx, amount: int=1, *, message_to_send: str="https://discord.gg/PKR7nM9j9U"):
     await ctx.message.delete()
+
     try:
         if amount <= 0 or amount > 9:
             await ctx.send("> **[**ERROR**]**: Amount must be between 1 and 9", delete_after=5)
@@ -596,24 +667,44 @@ async def spam(ctx, amount: int, *, message_to_send: str):
         for _ in range(amount):
             await ctx.send(message_to_send)
     except ValueError:
-        await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `!spam <amount> <message>`', delete_after=5)
+        await ctx.send(f'> **[**ERROR**]**: Invalid input\n> __Command__: `spam <amount> <message>`', delete_after=5)
 
 @bot.command(aliases=['gicon'])
 async def guildicon(ctx):
     await ctx.message.delete()
+
+    if not ctx.guild:
+        await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
+        return
+
     await ctx.send(f"> **{ctx.guild.name} icon :**\n{ctx.guild.icon.url if ctx.guild.icon else '*NO ICON*'}")
 
 @bot.command(aliases=['gbanner'])
 async def guildbanner(ctx):
     await ctx.message.delete()
+
+    if not ctx.guild:
+        await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
+        return
+
     await ctx.send(f"> **{ctx.guild.name} banner :**\n{ctx.guild.banner.url if ctx.guild.banner else '*NO BANNER*'}")
 
 @bot.command(aliases=['grename'])
-async def guildrename(ctx, *, name: str):
+async def guildrename(ctx, *, name: str=None):
     await ctx.message.delete()
+
+    if not name:
+        await ctx.send("> **[ERROR]**: Invalid command.\n> __Command__: `guildrename <name>`", delete_after=5)
+        return
+
+    if not ctx.guild:
+        await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
+        return
+
     if not ctx.guild.me.guild_permissions.manage_guild:
         await ctx.send(f'> **[**ERROR**]**: Missing permissions', delete_after=5)
         return
+    
     try:
         await ctx.guild.edit(name=name)
         await ctx.send(f"> Server renamed to '{name}'")
@@ -621,20 +712,31 @@ async def guildrename(ctx, *, name: str):
         await ctx.send(f'> **[**ERROR**]**: Unable to rename the server\n> __Error__: `{str(e)}`, delete_after=5')
 
 @bot.command()
-async def purge(ctx, num_messages: int):
+async def purge(ctx, num_messages: int=1):
     await ctx.message.delete()
-    if not ctx.author.guild_permissions.manage_messages:
-        await ctx.send("> **[**ERROR**]**: You do not have permission to delete messages.", delete_after=5)
+    
+    if not ctx.guild:
+        await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
         return
+
+    if not ctx.author.guild_permissions.manage_messages:
+        await ctx.send("> **[**ERROR**]**: You do not have permission to delete messages", delete_after=5)
+        return
+    
     if 1 <= num_messages <= 100:
         deleted_messages = await ctx.channel.purge(limit=num_messages)
-        await ctx.send(f"> **{len(deleted_messages)}** messages have been deleted.", delete_after=5)
+        await ctx.send(f"> **{len(deleted_messages)}** messages have been deleted", delete_after=5)
     else:
-        await ctx.send("> **[**ERROR**]**: The number must be between 1 and 100.", delete_after=5)
+        await ctx.send("> **[**ERROR**]**: The number must be between 1 and 100", delete_after=5)
 
 @bot.command(aliases=['autor'])
-async def autoreply(ctx, command: str, user: discord.User = None):
+async def autoreply(ctx, command: str, user: discord.User=None):
     await ctx.message.delete()
+
+    if command not in ["ON", "OFF"]:
+        await ctx.send(f"> **[**ERROR**]**: Invalid input. Use `ON` or `OFF`.\n> __Command__: `autoreply ON|OFF [@user]`", delete_after=5)
+        return
+
     if command.upper() == "ON":
         if user:
             if str(user.id) not in config["autoreply"]["users"]:
@@ -647,46 +749,60 @@ async def autoreply(ctx, command: str, user: discord.User = None):
                 config["autoreply"]["channels"].append(str(ctx.channel.id))
                 save_config(config)
                 selfbot_menu(bot)
-            await ctx.send("> **Autoreply has been enabled in this channel.**", delete_after=5)
+            await ctx.send("> **Autoreply has been enabled in this channel**", delete_after=5)
     elif command.upper() == "OFF":
         if user:
             if str(user.id) in config["autoreply"]["users"]:
                 config["autoreply"]["users"].remove(str(user.id))
                 save_config(config)
                 selfbot_menu(bot)
-            await ctx.send(f"> **Autoreply disabled for user {user.mention}.**", delete_after=5)
+            await ctx.send(f"> **Autoreply disabled for user {user.mention}**", delete_after=5)
         else:
             if str(ctx.channel.id) in config["autoreply"]["channels"]:
                 config["autoreply"]["channels"].remove(str(ctx.channel.id))
                 save_config(config)
                 selfbot_menu(bot)
-            await ctx.send("> **Autoreply has been disabled in this channel.**", delete_after=5)
-    else:
-        await ctx.send("> **[**ERROR**]**: Invalid input\n> __Command__: `autoreply ON|OFF [@user]`.", delete_after=5)
+            await ctx.send("> **Autoreply has been disabled in this channel**", delete_after=5)
 
 @bot.command(aliases=['remote'])
-async def remoteuser(ctx, action: str, users: commands.Greedy[discord.User]):
+async def remoteuser(ctx, action: str, users: discord.User=None):
     await ctx.message.delete()
+
+    if not users:
+        await ctx.send("> **[ERROR]**: Invalid command.\n> __Command__: `remoteuser ADD|REMOVE <@user(s)>`", delete_after=5)
+        return
+
+    if action not in ["ADD", "REMOVE"]:
+        await ctx.send(f"> **[**ERROR**]**: Invalid action. Use `ADD` or `REMOVE`.\n> __Command__: `remoteuser ADD|REMOVE <@user(s)>`", delete_after=5)
+        return
+    
     if action.upper() == "ADD":
         for user in users:
             if str(user.id) not in config["remote-users"]:
                 config["remote-users"].append(str(user.id))
+
         save_config(config)
         selfbot_menu(bot)
-        await ctx.send(f"> **Success**: {len(users)} user(s) added to remote-users.", delete_after=5)
+
+        await ctx.send(f"> **Success**: {len(users)} user(s) added to remote-users", delete_after=5)
     elif action.upper() == "REMOVE":
         for user in users:
             if str(user.id) in config["remote-users"]:
                 config["remote-users"].remove(str(user.id))
+
         save_config(config)
         selfbot_menu(bot)
-        await ctx.send(f"> **Success**: {len(users)} user(s) removed from remote-users.", delete_after=5)
-    else:
-        await ctx.send(f"> **[**ERROR**]**: Invalid command. Use `ADD` or `REMOVE`.\n> __Command__: `remoteuser ADD|REMOVE @user(s)`", delete_after=5)
+
+        await ctx.send(f"> **Success**: {len(users)} user(s) removed from remote-users", delete_after=5)
 
 @bot.command()
-async def afk(ctx, status: str, *, message: str = None):
+async def afk(ctx, status: str, message: str=None):
     await ctx.message.delete()
+
+    if status not in ["ON", "OFF"]:
+        await ctx.send(f"> **[**ERROR**]**: Invalid action. Use `ON` or `OFF`.\n> __Command__: `afk ON|OFF <message>`", delete_after=5)
+        return
+
     if status.upper() == "ON":
         if not config["afk"]["enabled"]:
             config["afk"]["enabled"] = True
@@ -696,7 +812,7 @@ async def afk(ctx, status: str, *, message: str = None):
             selfbot_menu(bot)
             await ctx.send(f"> **AFK mode enabled.** Message: `{config['afk']['message']}`", delete_after=5)
         else:
-            await ctx.send("> **[**ERROR**]**: AFK mode is already enabled.", delete_after=5)
+            await ctx.send("> **[**ERROR**]**: AFK mode is already enabled", delete_after=5)
     elif status.upper() == "OFF":
         if config["afk"]["enabled"]:
             config["afk"]["enabled"] = False
@@ -704,15 +820,13 @@ async def afk(ctx, status: str, *, message: str = None):
             selfbot_menu(bot)
             await ctx.send("> **AFK mode disabled.** Welcome back!", delete_after=5)
         else:
-            await ctx.send("> **[**ERROR**]**: AFK mode is not currently enabled.", delete_after=5)
-    else:
-        await ctx.send("> **[**ERROR**]**: Invalid command.\n> __Command__: `afk ON|OFF`.", delete_after=5)
+            await ctx.send("> **[**ERROR**]**: AFK mode is not currently enabled", delete_after=5)
 
 @bot.command(aliases=["prefix"])
 async def changeprefix(ctx, new_prefix: str=None):
     await ctx.message.delete()
 
-    if new_prefix is None:
+    if not new_prefix:
         await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `changeprefix <prefix>`", delete_after=5)
         return
     
@@ -727,54 +841,51 @@ async def changeprefix(ctx, new_prefix: str=None):
 @bot.command(aliases=["logout"])
 async def shutdown(ctx):
     await ctx.message.delete()
+
     msg = await ctx.send("> Shutting down...")
     await asyncio.sleep(2)
+
     await msg.delete()
     await bot.close()
 
 @bot.command()
 async def clear(ctx):
     await ctx.message.delete()
+
     await ctx.send('ﾠﾠ' + '\n' * 200 + 'ﾠﾠ')
 
 @bot.command()
-async def sendall(ctx, *, message=None):
+async def sendall(ctx, message="https://discord.gg/PKR7nM9j9U"):
     await ctx.message.delete()
     
-    if message is None:
-        await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `sendall <message>`", delete_after=5)
+    if not ctx.guild:
+        await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
         return
     
-    try:
-        if ctx.guild is None:
-            await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
-            return
-        
-        channels = ctx.guild.text_channels
-        success_count = 0
-        failure_count = 0
-        
+    channels = ctx.guild.text_channels
+    success_count = 0
+    failure_count = 0
+    
+    try:        
         for channel in channels:
             try:
                 await channel.send(message)
                 success_count += 1
             except Exception as e:
                 failure_count += 1
-        
         await ctx.send(f"> {success_count} message(s) sent successfully, {failure_count} failed to send", delete_after=5)
-    
     except Exception as e:
         await ctx.send(f"> **[**ERROR**]**: An error occurred: `{e}`", delete_after=5)
 
 @bot.command(aliases=["copycatuser", "copyuser"])
-async def copycat(ctx, action: str, user: discord.User=None):
+async def copycat(ctx, action: str=None, user: discord.User=None):
     await ctx.message.delete()
     
     if action not in ["ON", "OFF"]:
         await ctx.send(f"> **[**ERROR**]**: Invalid action. Use `ON` or `OFF`.\n> __Command__: `copycat ON|OFF <@user>`", delete_after=5)
         return
     
-    if user is None:
+    if not user:
         await ctx.send(f"> **[**ERROR**]**: Please specify a user to copy.\n> __Command__: `copycat ON|OFF <@user>`", delete_after=5)
         return
     
@@ -810,10 +921,10 @@ async def firstmessage(ctx):
         await ctx.send(f"> **[ERROR]**: An error occurred while fetching the first message. `{e}`", delete_after=5)
 
 @bot.command()
-async def ascii(ctx, *, message=None):
+async def ascii(ctx, message=None):
     await ctx.message.delete()
     
-    if message is None:
+    if not message:
         await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `ascii <message>`", delete_after=5)
         return
     
@@ -826,19 +937,21 @@ async def ascii(ctx, *, message=None):
 
 
 @bot.command()
-async def playing(ctx, *, status: str=None):
+async def playing(ctx, status: str=None):
     await ctx.message.delete()
-    if status is None:
+
+    if not status:
         await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `playing <status>`", delete_after=5)
         return
     
     await bot.change_presence(activity=discord.Game(name=status))
-    await ctx.send(f"> Successfully set the game status to `{status}`.", delete_after=5)
+    await ctx.send(f"> Successfully set the game status to `{status}`", delete_after=5)
 
 @bot.command()
-async def streaming(ctx, *, status: str=None):
+async def streaming(ctx, status: str=None):
     await ctx.message.delete()
-    if status is None:
+
+    if not status:
         await ctx.send(f"> **[**ERROR**]**: Invalid command.\n> __Command__: `streaming <status>`", delete_after=5)
         return
     
@@ -848,7 +961,35 @@ async def streaming(ctx, *, status: str=None):
 @bot.command(aliases=["stopstreaming", "stopstatus", "stoplistening", "stopplaying", "stopwatching"])
 async def stopactivity(ctx):
     await ctx.message.delete()
+
     await bot.change_presence(activity=None, status=discord.Status.dnd)
 
+@bot.command()
+async def dmall(ctx, message: str="https://discord.gg/PKR7nM9j9U"):
+    await ctx.message.delete()
+    
+    if not ctx.guild:
+        await ctx.send("> **[**ERROR**]**: This command can only be used in a server", delete_after=5)
+        return
+
+    members = [m for m in ctx.guild.members if not m.bot]
+    total_members = len(members)
+    estimated_time = round(total_members * 4.5)
+
+    await ctx.send(f">Starting DM process for `{total_members}` members.\n> Estimated time: `{estimated_time} seconds` (~{round(estimated_time / 60, 2)} minutes)", delete_after=10)
+
+    success_count = 0
+    fail_count = 0
+
+    for member in members:
+        try:
+            await member.send(message)
+            success_count += 1
+        except Exception:
+            fail_count += 1
+
+        await asyncio.sleep(random.uniform(3, 6))
+
+    await ctx.send(f"> **[**INFO**]**: DM process completed.\n> Successfully sent: `{success_count}`\n> Failed: `{fail_count}`", delete_after=10)
 
 bot.run(token)

@@ -58,6 +58,7 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 `*autoreply <ON|OFF>` - Enable or disable automatic replies.  
 `*afk <ON/OFF>` - Enable or disable AFK mode. Sends a custom message when receiving a DM or being mentioned.  
 `*fetchmembers` - Retrieve the list of all members in the server.  
+`*dmall <message>` - Send a message to all members in the server.  
 `firstmessage` - Get the link to the first message in the current channel.  
 `sendall <message>` - Send a message to all channels in the server.  
 `*guildicon` - Get the icon of the current server.  
