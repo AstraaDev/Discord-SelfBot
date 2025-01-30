@@ -245,7 +245,7 @@ async def geoip(ctx, ip: str=None):
         await ctx.send(f'> **[**ERROR**]**: Unable to geolocate ip\n> __Error__: `{str(e)}`', delete_after=5)
 
 @bot.command()
-async def tts(ctx, content: str=None):
+async def tts(ctx, *, content: str=None):
     await ctx.message.delete()
 
     if not content:
@@ -263,7 +263,7 @@ async def tts(ctx, content: str=None):
     await ctx.send(file=discord.File(f, f"{content[:10]}.wav"))
 
 @bot.command(aliases=['qrcode'])
-async def qr(ctx, text: str="https://discord.gg/PKR7nM9j9U"):
+async def qr(ctx, *, text: str="https://discord.gg/PKR7nM9j9U"):
     qr = qrcode.make(text)
     
     img_byte_arr = io.BytesIO()
@@ -301,7 +301,7 @@ async def gentoken(ctx, user: str=None):
         await ctx.send(f"> {user}'s token is: ||{''.join(code)}||")
 
 @bot.command()
-async def quickdelete(ctx, message: str=None):
+async def quickdelete(ctx, *, message: str=None):
     await ctx.message.delete()
 
     if not message:
@@ -323,7 +323,7 @@ async def usericon(ctx, user: discord.User = None):
     await ctx.send(f"> {user.mention}'s avatar:\n{avatar_url}")
 
 @bot.command(aliases=['tinfo'])
-async def tokeninfo(ctx, *, usertoken: str=None):
+async def tokeninfo(ctx, usertoken: str=None):
     await ctx.message.delete()
 
     if not usertoken:
@@ -413,7 +413,7 @@ async def tokeninfo(ctx, *, usertoken: str=None):
         await ctx.send(f'> **[**ERROR**]**: Unable to recover token infos\n> __Error__: Invalid token', delete_after=5)
 
 @bot.command()
-async def cleardm(ctx, *, amount: str="1"):
+async def cleardm(ctx, amount: str="1"):
     await ctx.message.delete()
 
     if not amount.isdigit():
@@ -525,7 +525,7 @@ async def whremove(ctx, webhook: str=None):
     await ctx.send(f'> Webhook has been deleted!')
 
 @bot.command(aliases=['hide'])
-async def hidemention(ctx, content: str=None):
+async def hidemention(ctx, *, content: str=None):
     await ctx.message.delete()
 
     if not content:
@@ -535,7 +535,7 @@ async def hidemention(ctx, content: str=None):
     await ctx.send(content + ('||\u200b||' * 200) + '@everyone')
 
 @bot.command()
-async def edit(ctx, content: str=None):
+async def edit(ctx, *, content: str=None):
     await ctx.message.delete()
     
     if not content:
@@ -594,7 +594,7 @@ async def minesweeper(ctx, size: int=5):
     await ctx.send(message_to_send)
 
 @bot.command(aliases=['leet'])
-async def leetspeak(ctx, content: str):
+async def leetspeak(ctx, *, content: str):
     await ctx.message.delete()
 
     if not content:
@@ -617,7 +617,7 @@ async def dick(ctx, user: str=None):
     await ctx.send(f"> **{user}**'s Dick size\n8{dong}D")
 
 @bot.command()
-async def reverse(ctx, content: str=None):
+async def reverse(ctx, *, content: str=None):
     await ctx.message.delete()
 
     if not content:
@@ -796,7 +796,7 @@ async def remoteuser(ctx, action: str, users: discord.User=None):
         await ctx.send(f"> **Success**: {len(users)} user(s) removed from remote-users", delete_after=5)
 
 @bot.command()
-async def afk(ctx, status: str, message: str=None):
+async def afk(ctx, status: str, *, message: str=None):
     await ctx.message.delete()
 
     if status not in ["ON", "OFF"]:
@@ -823,7 +823,7 @@ async def afk(ctx, status: str, message: str=None):
             await ctx.send("> **[**ERROR**]**: AFK mode is not currently enabled", delete_after=5)
 
 @bot.command(aliases=["prefix"])
-async def changeprefix(ctx, new_prefix: str=None):
+async def changeprefix(ctx, *, new_prefix: str=None):
     await ctx.message.delete()
 
     if not new_prefix:
@@ -855,7 +855,7 @@ async def clear(ctx):
     await ctx.send('ﾠﾠ' + '\n' * 200 + 'ﾠﾠ')
 
 @bot.command()
-async def sendall(ctx, message="https://discord.gg/PKR7nM9j9U"):
+async def sendall(ctx, *, message="https://discord.gg/PKR7nM9j9U"):
     await ctx.message.delete()
     
     if not ctx.guild:
@@ -921,7 +921,7 @@ async def firstmessage(ctx):
         await ctx.send(f"> **[ERROR]**: An error occurred while fetching the first message. `{e}`", delete_after=5)
 
 @bot.command()
-async def ascii(ctx, message=None):
+async def ascii(ctx, *, message=None):
     await ctx.message.delete()
     
     if not message:
@@ -937,7 +937,7 @@ async def ascii(ctx, message=None):
 
 
 @bot.command()
-async def playing(ctx, status: str=None):
+async def playing(ctx, *, status: str=None):
     await ctx.message.delete()
 
     if not status:
@@ -948,7 +948,7 @@ async def playing(ctx, status: str=None):
     await ctx.send(f"> Successfully set the game status to `{status}`", delete_after=5)
 
 @bot.command()
-async def streaming(ctx, status: str=None):
+async def streaming(ctx, *, status: str=None):
     await ctx.message.delete()
 
     if not status:
@@ -965,7 +965,7 @@ async def stopactivity(ctx):
     await bot.change_presence(activity=None, status=discord.Status.dnd)
 
 @bot.command()
-async def dmall(ctx, message: str="https://discord.gg/PKR7nM9j9U"):
+async def dmall(ctx, *, message: str="https://discord.gg/PKR7nM9j9U"):
     await ctx.message.delete()
     
     if not ctx.guild:
