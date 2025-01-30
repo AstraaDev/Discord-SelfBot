@@ -43,7 +43,7 @@ By using this SelfBot, you agree that you are responsible for any consequences r
 `*geoip <ip>` - Looks up the IP's location.  
 `*tts <text>` - Converts text to speech and sends an audio file (.wav).  
 `*qr <text>` - Generate a QR code from the provided text and send it as an image.  
-`*hidemention <display_part> <hidden_part>` - Hide messages inside other messages.  
+`*hidemention <message>` - Hide messages inside other messages.  
 `*edit <message>` - Move the position of the (edited) tag.  
 `*reverse <message>` - Reverse the letters of a message.  
 `*gentoken` - Generate an invalid but correctly patterned token.  
