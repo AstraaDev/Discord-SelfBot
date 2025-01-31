@@ -93,10 +93,10 @@ async def on_message(message):
             await message.reply(message.content)
 
     if config["afk"]["enabled"]:
-        if bot.user in message.mentions:
+        if bot.user in message.mentions and message.author != bot.user:
             await message.reply(config["afk"]["message"])
             return
-        elif isinstance(message.channel, discord.DMChannel):
+        elif isinstance(message.channel, discord.DMChannel) and message.author != bot.user:
             await message.reply(config["afk"]["message"])
             return
 
