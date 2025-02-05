@@ -19,11 +19,10 @@
 
 This SelfBot provides a large variety of commands to streamline your Discord experience. It features an intuitive interface, complete help documentation, and updates to keep it functional and efficient. Some unnecessary commands have been removed, but you are welcome to suggest additions via issues or Discord.
 
-## Disclaimer
+---
 
-| This SelfBot is intended for **educational purposes** only. |
-|-------------------------------------------------------------|
-By using this SelfBot, you agree that you are responsible for any consequences resulting from its use.
+## Disclaimer
+This script is potentially malicious and unethical. It can be used for malicious purposes, such as stealing user tokens, personal information, and other sensitive data. Using this script for malicious purposes without the user's consent is illegal and violates ethical guidelines. Do not use this script without proper authorization.
 
 ---
 
