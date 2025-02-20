@@ -21,11 +21,6 @@ This SelfBot provides a large variety of commands to streamline your Discord exp
 
 ---
 
-## Disclaimer
-This script is potentially malicious and unethical. It can be used for malicious purposes, such as stealing user tokens, personal information, and other sensitive data. Using this script for malicious purposes without the user's consent is illegal and violates ethical guidelines. Do not use this script without proper authorization.
-
----
-
 ## Features
 
 <details>
