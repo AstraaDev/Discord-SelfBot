@@ -167,7 +167,7 @@ Messages, channels, and users for autoreply are stored in `config/config.json`:
 ---
 
 ## Additional Information
-- Need help? Join the [Discord Server](https://astraadev.github.io/discord).
+- Need help? Join the [Discord Server](https://astraadev.github.io/#/discord).
 - Contributions are welcome! Open an issue or create a pull request.
 
 ---
