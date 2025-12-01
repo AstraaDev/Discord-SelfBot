@@ -1,18 +1,18 @@
 {
-    "token": "YOUR_DISCORD_TOKEN_HERE",
+    "token": "MTQzNjM2NzE5NTU4NzM1MDYxMA.GFbnAr.VorPI2rlNSjEJO5SgOnyRhNUW7rrsSf_UtQJvw",
     "prefix": ".",
     "remote-users": [],
     "autoreply": {
         "messages": [
-            "https://github.com/AstraaDev/Discord-SelfBot",
-            "https://discord.gg/PKR7nM9j9U"
+            "https://x.com/musiala_7mos",
+            "https://discord.gg/WnSu5ARB"
         ],
         "channels": [],
         "users": []
     },
     "afk": {
-        "enabled": false,
-        "message": "I am currently AFK. I will respond as soon as possible!"
+        "enabled": true,
+        "message": "sleep"
     },
     "copycat": {
         "users": []
